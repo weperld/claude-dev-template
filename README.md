@@ -14,15 +14,11 @@ Claude Code와 함께 사용하는 개발 자동화 시스템입니다.
 
 ```
 개발 자동화 시스템을 현재 프로젝트에 세팅해줘.
-
-1. 먼저 템플릿 저장소를 클론해:
-   git clone https://github.com/weperld/claude-dev-template.git _template_temp
-2. _template_temp/SETUP_GUIDE.md 를 읽고 Phase 1~5를 순서대로 진행해줘.
-3. 세팅 완료 후 _template_temp/ 디렉토리를 삭제해줘.
+세팅 가이드: https://raw.githubusercontent.com/weperld/claude-dev-template/main/SETUP_GUIDE.md
 ```
 
-> 에이전트가 저장소를 클론하고 세팅 가이드를 읽은 뒤, 프로젝트 정보를 질문합니다.
-> 답변을 마치면 에이전트가 템플릿 변수를 치환하여 프로젝트에 자동 세팅합니다.
+> 에이전트가 세팅 가이드를 읽고 프로젝트 정보를 질문합니다.
+> 답변을 마치면 에이전트가 템플릿 저장소를 클론하여 자동 세팅합니다.
 
 ---
 

@@ -1,6 +1,10 @@
 # 프로젝트 세팅 가이드 (에이전트용)
 
 > 이 문서는 Claude Code 에이전트가 읽고, 사용자와 대화하며 프로젝트에 개발 자동화 시스템을 세팅하기 위한 가이드입니다.
+>
+> **에이전트 진행 순서**: 이 가이드를 읽기 (URL) → Phase 1~2 진행 → 저장소 클론 → Phase 3~5 진행 → 임시 디렉토리 삭제
+>
+> **템플릿 저장소**: https://github.com/weperld/claude-dev-template
 
 ---
 
@@ -136,20 +140,24 @@
 
 ### Phase 3: 템플릿 복사 및 초기화
 
-#### 방법 A: init.ps1 사용 (Windows PowerShell, 권장)
+#### 준비: 템플릿 저장소 클론
+
+```bash
+# 프로젝트 루트에서 실행
+git clone https://github.com/weperld/claude-dev-template.git _template_temp
+```
+
+#### 방법 A: init.ps1 사용 (Windows PowerShell)
 
 ```powershell
-# 1. 템플릿 디렉토리 전체를 프로젝트 루트의 임시 위치에 복사
-Copy-Item -Path "[템플릿 경로]\*" -Destination "[프로젝트 루트]\_template_temp\" -Recurse
+# 1. 생성한 template-config.json을 임시 디렉토리에 배치
+Copy-Item "[생성한 config 경로]" "_template_temp\template-config.json"
 
-# 2. 생성한 template-config.json을 임시 디렉토리에 배치
-Copy-Item "[생성한 config 경로]" "[프로젝트 루트]\_template_temp\template-config.json"
-
-# 3. init.ps1 실행
-Set-Location "[프로젝트 루트]\_template_temp"
+# 2. init.ps1 실행
+Set-Location "_template_temp"
 .\init.ps1
 
-# 4. 생성된 파일들을 프로젝트 루트로 이동
+# 3. 생성된 파일들을 프로젝트 루트로 이동
 # 아래 파일/디렉토리를 프로젝트 루트로 복사:
 #   - CLAUDE.md, AGENTS.md, AGENT_ROLES.md, PROJECT_SUMMARY.md
 #   - QUICK_REFERENCE.md, WORK_IN_PROGRESS.md
@@ -158,11 +166,12 @@ Set-Location "[프로젝트 루트]\_template_temp"
 #   - .guides/ (디렉토리 전체)
 #   - .wips/ (디렉토리 전체, templates/와 active/ 포함)
 
-# 5. 임시 디렉토리 정리
-Remove-Item "[프로젝트 루트]\_template_temp" -Recurse
+# 4. 임시 디렉토리 정리
+Set-Location ..
+Remove-Item "_template_temp" -Recurse -Force
 ```
 
-#### 방법 B: 에이전트가 직접 수행 (크로스 플랫폼)
+#### 방법 B: 에이전트가 직접 수행 (크로스 플랫폼, 권장)
 
 에이전트가 다음 순서로 직접 파일을 생성/복사합니다:
 
