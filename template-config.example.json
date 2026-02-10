@@ -1,0 +1,30 @@
+{
+  "_comment": "ExcelBinder 프로젝트 실제 설정 예시 - 새 프로젝트 설정 시 참고용",
+  "project": {
+    "name": "ExcelBinder",
+    "description": "엑셀 데이터를 추출하여 JSON/Binary로 변환하고, C# 코드를 자동 생성하는 WPF 데스크톱 애플리케이션",
+    "techStack": "C#, WPF, .NET 10.0, MVVM 패턴",
+    "libraries": "NPOI 2.7.5 (Excel 처리), Newtonsoft.Json 13.0.4 (JSON 직렬화), Scriban 6.5.2 (템플릿 엔진)",
+    "buildCommand": "dotnet build ExcelBinder/",
+    "testCommand": "dotnet test ExcelBinder.Tests/",
+    "runCommand": "dotnet run --project ExcelBinder/",
+    "projectFile": "ExcelBinder.csproj",
+    "projectStructure": "ExcelBinder/\n├── Models/          # 데이터 모델\n├── ViewModels/      # MVVM ViewModel\n├── Views/           # XAML UI\n├── Services/        # 비즈니스 로직\n│   └── Processors/  # 데이터 처리기\n└── ...",
+    "namingConventions": "- **클래스/메서드/속성**: PascalCase\n- **private 필드**: _camelCase\n- **인터페이스**: IPascalCase\n- **파일명**: 클래스명과 동일",
+    "featureCategories": "StaticData, Logic, SchemaGen, Enum, Constants",
+    "outputFormats": "Binary (.bytes), JSON (.json)",
+    "cliOptions": "dotnet run --project ExcelBinder/ -- --feature [FeatureID] [옵션]\n# 옵션: --export, --codegen, --both, --all",
+    "domainRules": "### 엑셀 필터링 규칙\n- **열 필터링 접두어**: `#` (해당 열 무시)\n- **행 필터링 접두어**: `#` (해당 행 무시)\n- **헤더 행**: 1행\n- **데이터 시작 행**: 2행"
+  },
+  "pipeline": {
+    "preset": "full"
+  },
+  "languageRules": {
+    "typeSafety": "무조건 캐스팅 (Type)cast 남용 금지, dynamic 사용 최소화",
+    "antiPatterns": "(Type)cast 남용, dynamic 과다 사용, 빈 catch 블록",
+    "architectRules": "- IsBusy 상태는 반드시 try-finally로 해제 보장\n- ViewModel에서 View 직접 참조 금지 (MVVM 위반)",
+    "developerRules": "- 무조건 캐스팅 남용 금지\n- 불필요한 dynamic 사용 금지\n- null 체크 후 안전한 접근",
+    "validationItems": "- [ ] 무조건 캐스팅 (Type)cast 남용하지 않음\n- [ ] 불필요한 dynamic 사용하지 않음\n- [ ] 빈 catch 블록이 없음\n- [ ] IsBusy 상태가 try-finally로 보장됨",
+    "designReviewItems": "- [ ] MVVM 패턴 준수 (ViewModel에서 View 미참조)\n- [ ] 인터페이스 분리 원칙 준수\n- [ ] 비동기 패턴 일관성"
+  }
+}

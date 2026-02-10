@@ -1,0 +1,10 @@
+{
+  "name": "Lite",
+  "description": "소규모/빠른 작업용 3단계 파이프라인",
+  "stages": ["Plan", "Code", "Review"],
+  "agents": {
+    "Plan": { "agent": "analyst", "crosscheckAgent": "developer", "gate": "Gate-1" },
+    "Code": { "agent": "developer", "crosscheckAgent": "reviewer", "gate": "Gate-2" },
+    "Review": { "agent": "reviewer", "crosscheckAgent": null, "gate": "Gate-3" }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Standard",
+  "description": "일반 프로젝트용 5단계 파이프라인",
+  "stages": ["Plan", "Code", "Test", "Docs", "Review"],
+  "agents": {
+    "Plan": { "agent": "analyst", "crosscheckAgent": "architect", "gate": "Gate-1" },
+    "Code": { "agent": "developer", "crosscheckAgent": "tester", "gate": "Gate-2" },
+    "Test": { "agent": "tester", "crosscheckAgent": "developer", "gate": "Gate-3" },
+    "Docs": { "agent": "doc-manager", "crosscheckAgent": "reviewer", "gate": "Gate-4" },
+    "Review": { "agent": "reviewer", "crosscheckAgent": null, "gate": "Gate-5" }
+  }
+}

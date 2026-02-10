@@ -1,0 +1,29 @@
+{
+  "project": {
+    "name": "MyProject",
+    "description": "프로젝트 설명을 입력하세요",
+    "techStack": "언어, 프레임워크, 런타임",
+    "libraries": "주요 라이브러리 목록",
+    "buildCommand": "빌드 명령어",
+    "testCommand": "테스트 명령어",
+    "runCommand": "실행 명령어",
+    "projectFile": "프로젝트 파일명 (예: MyProject.csproj)",
+    "projectStructure": "프로젝트 폴더 구조 설명",
+    "namingConventions": "명명 규칙 설명",
+    "featureCategories": "기능 카테고리 목록",
+    "outputFormats": "출력 포맷",
+    "cliOptions": "CLI 옵션 설명",
+    "domainRules": "프로젝트 도메인 규칙"
+  },
+  "pipeline": {
+    "preset": "full"
+  },
+  "languageRules": {
+    "typeSafety": "타입 안전성 규칙을 입력하세요",
+    "antiPatterns": "안티패턴 설명",
+    "architectRules": "아키텍트 언어별 규칙",
+    "developerRules": "개발자 언어별 규칙",
+    "validationItems": "- [ ] 검증 항목 1\n- [ ] 검증 항목 2",
+    "designReviewItems": "설계 리뷰 언어별 항목"
+  }
+}

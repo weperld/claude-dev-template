@@ -1,0 +1,14 @@
+{
+  "name": "Full",
+  "description": "대규모/엄격한 프로젝트용 7단계 파이프라인",
+  "stages": ["Plan", "Design", "Code", "Test", "Docs", "QA", "Review"],
+  "agents": {
+    "Plan": { "agent": "analyst", "crosscheckAgent": "architect", "gate": "Gate-1" },
+    "Design": { "agent": "architect", "crosscheckAgent": "developer", "gate": "Gate-2" },
+    "Code": { "agent": "developer", "crosscheckAgent": "tester", "gate": "Gate-3" },
+    "Test": { "agent": "tester", "crosscheckAgent": "developer", "gate": "Gate-4" },
+    "Docs": { "agent": "doc-manager", "crosscheckAgent": "reviewer", "gate": "Gate-5" },
+    "QA": { "agent": "reviewer", "crosscheckAgent": "architect", "gate": "Gate-6" },
+    "Review": { "agent": "coordinator", "crosscheckAgent": null, "gate": "Gate-7" }
+  }
+}
