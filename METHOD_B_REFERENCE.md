@@ -52,10 +52,10 @@
 | `{{OUTPUT_FORMATS}}` | `project.outputFormats` |
 | `{{CLI_OPTIONS}}` | `project.cliOptions` |
 | `{{DOMAIN_RULES}}` | `project.domainRules` |
-| `{{TYPE_SAFETY}}` | `languageRules.typeSafety` |
-| `{{ANTI_PATTERNS}}` | `languageRules.antiPatterns` |
-| `{{ARCHITECT_RULES}}` | `languageRules.architectRules` |
-| `{{DEVELOPER_RULES}}` | `languageRules.developerRules` |
+| `{{TYPE_SAFETY_RULES}}` | `languageRules.typeSafety` |
+| `{{TYPE_SAFETY_ANTIPATTERNS}}` | `languageRules.antiPatterns` |
+| `{{ARCHITECT_LANG_RULES}}` | `languageRules.architectRules` |
+| `{{DEVELOPER_LANG_RULES}}` | `languageRules.developerRules` |
 | `{{VALIDATION_ITEMS}}` | `languageRules.validationItems` |
 | `{{DESIGN_REVIEW_ITEMS}}` | `languageRules.designReviewItems` |
 | `{{BUILD_ERROR_CHECKLIST}}` | `languageRules.buildErrorChecklist` (선택) |
@@ -65,7 +65,7 @@
 
 > 선택 필드가 config에 없으면 빈 문자열로 치환합니다.
 
-### B. 동적 파이프라인 변수 (~13개)
+### B. 동적 파이프라인 변수 (~12개)
 
 프리셋 + stages.json을 조합하여 생성해야 합니다. **섹션 3에서 각각의 알고리즘을 설명합니다.**
 
@@ -83,7 +83,6 @@
 | `{{WIP_FOLDER_TREE}}` | AGENTS.md |
 | `{{AGENT_STAGE_TABLE}}` | AGENTS.md |
 | `{{PIPELINE_WORKFLOW_AUTO}}` | PIPELINE.md |
-| `{{COMMAND_COUNT}}` | QUICK_REFERENCE.md |
 
 ### C. 별칭 변수 (~4개)
 
@@ -94,7 +93,7 @@
 | `{{LANG_RULES}}` | `{{VALIDATION_ITEMS}}` (= `languageRules.validationItems`) |
 | `{{LANGUAGE_SPECIFIC_GATE_CHECKS}}` | `{{VALIDATION_ITEMS}}` (= `languageRules.validationItems`) |
 | `{{PROJECT_FILE_STRUCTURE}}` | `{{PROJECT_STRUCTURE}}` (= `project.projectStructure`) |
-| `{{PROJECT_EXAMPLES}}` | `{{OUTPUT_FORMATS}}` (= `project.outputFormats`) |
+| `{{PROJECT_EXAMPLES}}` | `{{PROJECT_STRUCTURE}}` (= `project.projectStructure`) |
 
 ### D. WIP 템플릿 변수 (~8개)
 
@@ -103,14 +102,15 @@
 
 | 변수명 | stages.json 경로 | 설명 |
 |--------|-----------------|------|
-| `{{WIP_STAGE_NAME}}` | 스테이지 키 이름 | 예: "Plan", "Code" |
-| `{{WIP_STAGE_KOREAN}}` | `{stage}.koreanName` | 예: "계획", "코딩" |
-| `{{WIP_GATE_NAME}}` | `Gate-{index+1}` | 예: "Gate-1" |
-| `{{WIP_STEP1}}` | `{stage}.step1` | 1단계 체크리스트 |
-| `{{WIP_STEP2}}` | `{stage}.step2` | 2단계 체크리스트 |
-| `{{WIP_STEP3}}` | `{stage}.step3` | 3단계 체크리스트 |
-| `{{WIP_RESULTS_TEMPLATE}}` | `{stage}.results` | 결과 템플릿 |
-| `{{WIP_LANG_RULES}}` | `{stage}.langRules` | 스테이지별 언어 규칙 |
+| `{{STAGE}}` | 스테이지 키 이름 | 예: "Plan", "Code" |
+| `{{AGENT}}` | `{stage}.agent` (프리셋 우선) | 예: "analyst", "developer" |
+| `{{CROSSCHECK_AGENT}}` | `{stage}.crosscheckAgent` (프리셋 우선) | 예: "architect", "tester" |
+| `{{GATE}}` | `Gate-{index+1}` | 예: "Gate-1" |
+| `{{STAGE_STEP1}}` | `{stage}.step1` | 1단계 체크리스트 |
+| `{{STAGE_STEP2}}` | `{stage}.step2` | 2단계 체크리스트 |
+| `{{STAGE_STEP3}}` | `{stage}.step3` | 3단계 체크리스트 |
+| `{{STAGE_RESULTS}}` | `{stage}.results` | 결과 템플릿 |
+| `{{LANG_RULES}}` | `{stage}.langRules` | 스테이지별 언어 규칙 |
 
 ### E. 기타 고정 변수
 
@@ -362,16 +362,15 @@ GATE_OVERVIEW_TABLE = lines.join("\n")
 **standard 프리셋 예시 출력:**
 ```
 | Gate-1 | Plan → Code | analyst 2회 | architect 1회 | Plan 재계획 |
-| Gate-2 | Code → Test | developer 2회 | tester 1회 | Design 재설계 |
+| Gate-2 | Code → Test | developer 2회 | tester 1회 | Plan 재계획 |
 | Gate-3 | Test → Docs | tester 2회 | developer 1회 | Code 재코딩 |
 | Gate-4 | Docs → Review | doc-manager 2회 | reviewer 1회 | Test 재테스트 |
 | Gate-5 | Review → 완료 | reviewer 2회 | - | 적절 단계로 롤백 |
 ```
 
-> **참고**: standard 프리셋에는 "Design" 단계가 없으므로, Code의 rollbackTo("Design")는
-> 롤백 해결 알고리즘에 의해 이전 단계("Plan")로 폴백됩니다.
-> 위 예시에서 Gate-2의 롤백이 "Design 재설계"로 표시되는 것은 stages.json에
-> Design 메타데이터가 존재하기 때문입니다. 실제로는 해당 프리셋의 사용 가능한 단계로 폴백됩니다.
+> **참고**: stages.json에서 Code의 rollbackTo는 "Design"이지만, standard 프리셋에는
+> "Design" 단계가 없으므로 `Resolve-RollbackTarget` 알고리즘이 이전 단계("Plan")로 폴백합니다.
+> full 프리셋에서는 "Design 재설계"로 정상 표시됩니다.
 
 ---
 

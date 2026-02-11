@@ -39,7 +39,7 @@ Claude Code와 함께 사용하는 개발 자동화 시스템입니다.
 3. **SETUP_GUIDE.md의 Phase 1~5를 순서대로 진행**:
    - Phase 1: 사용자에게 프로젝트 정보 질문
    - Phase 2: `template-config.json` 생성
-   - Phase 3: 템플릿 파일 복사 및 변수 치환 (init.ps1 또는 직접 수행)
+   - Phase 3: 템플릿 파일 복사 및 변수 치환 (init.ps1/init.sh 또는 직접 수행)
    - Phase 4: 스켈레톤 가이드 작성 (사용자와 함께)
    - Phase 5: 검증
 
@@ -83,6 +83,7 @@ Claude Code와 함께 사용하는 개발 자동화 시스템입니다.
 ### 시스템 구성
 
 - **Gate 검증**: 각 파이프라인 단계의 통과 조건 + 크로스체크
+- **수렴 검증**: 분석/계획/설계 단계에서 필수 보완 사항 0건까지 반복 점검
 - **WIP 추적**: WorkID 기반 작업 관리 (WIP-YYYYMMDD-NNN)
 - **에이전트 시스템**: 역할별 에이전트 (analyst, architect, developer, tester, reviewer 등)
 - **에러 핸들링**: 롤백 프로토콜, 충돌 방지
@@ -113,7 +114,7 @@ claude-dev-template/
 ├── template-config.example.json  # 설정 예시 (ExcelBinder 기준)
 ├── init.ps1                      # 초기화 스크립트 (Windows PowerShell)
 ├── init.sh                       # 초기화 스크립트 (Linux/macOS Bash)
-├── METHOD_B_REFERENCE.md          # 방법 B 수동 치환 참조 가이드
+├── METHOD_B_REFERENCE.md         # 방법 B 수동 치환 참조 가이드
 ├── README.md                     # 이 파일
 │
 ├── *.md.tmpl                     # 변수 치환 템플릿 (11개)

@@ -371,7 +371,7 @@ config에서 직접 대입되는 변수입니다. 필수(R) / 선택(O) 구분�
 
 | 변수 | config 경로 | 필수 | 사용되는 파일 |
 |------|------------|:----:|--------------|
-| `{{PROJECT_NAME}}` | project.name | R | CLAUDE.md, QUICK_REFERENCE.md, 명령어.md 등 |
+| `{{PROJECT_NAME}}` | project.name | R | CLAUDE.md, PROJECT_SUMMARY.md, AGENTS.md, 명령어.md 등 |
 | `{{PROJECT_DESCRIPTION}}` | project.description | R | CLAUDE.md |
 | `{{TECH_STACK}}` | project.techStack | R | CLAUDE.md, AGENTS.md |
 | `{{LIBRARIES}}` | project.libraries | R | CLAUDE.md |
@@ -390,7 +390,7 @@ config에서 직접 대입되는 변수입니다. 필수(R) / 선택(O) 구분�
 | `{{ARCHITECT_LANG_RULES}}` | languageRules.architectRules | R | AGENTS.md |
 | `{{DEVELOPER_LANG_RULES}}` | languageRules.developerRules | R | AGENTS.md |
 | `{{VALIDATION_ITEMS}}` | languageRules.validationItems | R | AGENTS.md, GATES.md, WIP |
-| `{{DESIGN_REVIEW_ITEMS}}` | languageRules.designReviewItems | R | AGENTS.md |
+| `{{DESIGN_REVIEW_ITEMS}}` | languageRules.designReviewItems | R | (Reserve: 치환 등록됨, 현재 .tmpl 미사용) |
 | `{{BUILD_ERROR_CHECKLIST}}` | languageRules.buildErrorChecklist | O | QUICK_REFERENCE.md |
 | `{{RUNTIME_ERROR_CHECKLIST}}` | languageRules.runtimeErrorChecklist | O | QUICK_REFERENCE.md |
 | `{{TECHNICAL_PRINCIPLES}}` | languageRules.technicalPrinciples | O | QUICK_REFERENCE.md |
@@ -404,11 +404,11 @@ preset + stages.json 조합으로 init 스크립트가 자동 생성하는 변�
 | 변수 | 생성 로직 | 사용되는 파일 |
 |------|----------|--------------|
 | `{{COMMAND_COUNT}}` | 고정값 "14" | CLAUDE.md |
-| `{{HARD_BLOCKS_SUMMARY}}` | typeSafety + 고정 규칙 조합 | CLAUDE.md |
-| `{{ABSOLUTE_RULES_SUMMARY}}` | HARD_BLOCKS_SUMMARY와 동일 | AGENTS.md |
+| `{{HARD_BLOCKS_SUMMARY}}` | typeSafety + 고정 규칙 조합 | (Reserve: ABSOLUTE_RULES_SUMMARY와 동일 값, 현재 .tmpl 미사용) |
+| `{{ABSOLUTE_RULES_SUMMARY}}` | HARD_BLOCKS_SUMMARY와 동일 | CLAUDE.md |
 | `{{PIPELINE_ARROW}}` | 스테이지명을 " → "로 연결 | CLAUDE.md, AGENTS.md |
 | `{{GATED_PIPELINE_ARROW}}` | 스테이지명과 Gate를 교차 배치 | GATES.md |
-| `{{STAGE_COUNT}}` | 프리셋 스테이지 수 | PIPELINE.md, QUICK_REFERENCE.md |
+| `{{STAGE_COUNT}}` | 프리셋 스테이지 수 | PIPELINE.md |
 | `{{PIPELINE_STAGES_LIST}}` | 번호+한글명+요약 목록 | PIPELINE.md |
 | `{{PIPELINE_WORKFLOW_AUTO}}` | 자동화 모드 워크플로우 | PIPELINE.md |
 | `{{WIP_COMPLETED_STEPS}}` | 체크박스 형태 완료 단계 목록 | WORK_IN_PROGRESS.md |
