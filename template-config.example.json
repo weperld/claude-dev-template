@@ -25,6 +25,9 @@
     "architectRules": "- IsBusy 상태는 반드시 try-finally로 해제 보장\n- ViewModel에서 View 직접 참조 금지 (MVVM 위반)",
     "developerRules": "- 무조건 캐스팅 남용 금지\n- 불필요한 dynamic 사용 금지\n- null 체크 후 안전한 접근",
     "validationItems": "- [ ] 무조건 캐스팅 (Type)cast 남용하지 않음\n- [ ] 불필요한 dynamic 사용하지 않음\n- [ ] 빈 catch 블록이 없음\n- [ ] IsBusy 상태가 try-finally로 보장됨",
-    "designReviewItems": "- [ ] MVVM 패턴 준수 (ViewModel에서 View 미참조)\n- [ ] 인터페이스 분리 원칙 준수\n- [ ] 비동기 패턴 일관성"
+    "designReviewItems": "- [ ] MVVM 패턴 준수 (ViewModel에서 View 미참조)\n- [ ] 인터페이스 분리 원칙 준수\n- [ ] 비동기 패턴 일관성",
+    "buildErrorChecklist": "- [ ] NuGet 패키지 복원 확인 (dotnet restore)\n- [ ] .NET SDK 버전 확인 (dotnet --version)\n- [ ] 프로젝트 참조 경로 확인\n- [ ] 누락된 using 문 확인",
+    "runtimeErrorChecklist": "- [ ] null 참조 예외 발생 위치 확인\n- [ ] 파일 경로 존재 여부 확인\n- [ ] 권한 문제 확인\n- [ ] 설정 파일 로드 확인",
+    "technicalPrinciples": "- **MVVM 패턴 준수**: ViewModel에서 View 직접 참조 금지\n- **타입 안전성**: 무조건 캐스팅 (Type)cast 남용 금지\n- **데이터 무결성**: 원본 엑셀 데이터 변형 금지\n- **에러 처리**: 빈 catch 블록 사용 금지"
   }
 }

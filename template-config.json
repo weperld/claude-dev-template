@@ -24,6 +24,10 @@
     "architectRules": "아키텍트 언어별 규칙",
     "developerRules": "개발자 언어별 규칙",
     "validationItems": "- [ ] 검증 항목 1\n- [ ] 검증 항목 2",
-    "designReviewItems": "설계 리뷰 언어별 항목"
+    "designReviewItems": "설계 리뷰 언어별 항목",
+    "buildErrorChecklist": "",
+    "runtimeErrorChecklist": "",
+    "technicalPrinciples": "",
+    "codePatterns": ""
   }
 }
