@@ -19,7 +19,7 @@ def get_last_workid(work_in_progress_path: str) -> tuple[str, int]:
         with open(work_in_progress_path, 'r', encoding='utf-8') as f:
             content = f.read()
 
-        # WIP-YYYYMMDD-NN 형식 찾기
+        # WIP-YYYYMMDD-NNN 형식 찾기
         pattern = r'WIP-(\d{8})-(\d{3})'
         matches = re.findall(pattern, content)
 

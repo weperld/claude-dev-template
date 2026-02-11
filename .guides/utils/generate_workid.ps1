@@ -9,7 +9,7 @@ function Get-LastWorkID {
     try {
         $content = Get-Content $WorkInProgressPath -Raw -Encoding UTF8
 
-        # WIP-YYYYMMDD-NN 형식 찾기
+        # WIP-YYYYMMDD-NNN 형식 찾기
         $matches = [regex]::Matches($content, "WIP-(\d{8})-(\d{3})")
 
         if ($matches.Count -eq 0) {

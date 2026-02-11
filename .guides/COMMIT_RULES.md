@@ -11,7 +11,7 @@
 
 본문 (선택사항)
 
-WorkID: WIP-YYYYMMDD-NN
+WorkID: WIP-YYYYMMDD-NNN
 ```
 
 ### 필수 요소
@@ -74,7 +74,7 @@ WorkID: WIP-20250208-001
 ```
 
 ### WorkID 형식
-- `WIP-YYYYMMDD-NN`
+- `WIP-YYYYMMDD-NNN`
 - 예: `WIP-20250208-001`
 
 ---

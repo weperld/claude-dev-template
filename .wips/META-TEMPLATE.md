@@ -1,7 +1,7 @@
 # {{STAGE}} 단계 독립 WIP
 
 ## 기본 정보
-- **WorkID**: WIP-YYYYMMDD-NN
+- **WorkID**: WIP-YYYYMMDD-NNN
 - **스테이지**: {{STAGE}}
 - **담당 에이전트**: {{AGENT}}
 - **생성일**: YYYY-MM-DD

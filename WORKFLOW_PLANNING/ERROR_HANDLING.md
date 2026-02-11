@@ -443,8 +443,8 @@ reviewer에게 리뷰를 요청합니다...
 "신규: 기능 설명"           # 새 작업 시작
 "수정: 파일:라인 문제"      # 기능 수정
 "기획: 파일경로"            # 기획서 처리
-"완료: WIP-XXX"            # 작업 완료
-"취소: WIP-XXX 사유"        # 작업 취소
+"완료: WIP-XXXXXXXX-NNN"            # 작업 완료
+"취소: WIP-XXXXXXXX-NNN 사유"        # 작업 취소
 ```
 
 **에이전트가 자동으로:**
@@ -456,7 +456,7 @@ reviewer에게 리뷰를 요청합니다...
 
 ## 📚 관련 모듈
 
-- [PIPELINE.md](PIPELINE.md) - 7단계 개발 파이프라인
+- [PIPELINE.md](PIPELINE.md) - 개발 파이프라인
 - [GATES.md](GATES.md) - Gate 검증 시스템
 - [AUTO_UPDATE.md](AUTO_UPDATE.md) - WorkID 및 자동 업데이트 시스템
 - [REPORTS.md](REPORTS.md) - 작업 완료 보고서 생성
