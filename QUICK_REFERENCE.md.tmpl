@@ -91,9 +91,9 @@
 
 ### 작업 재개
 ```
-재개: WIP-YYYYMMDD-NN
+재개: WIP-YYYYMMDD-NNN
 또는
-CONTINUE: WIP-YYYYMMDD-NN
+CONTINUE: WIP-YYYYMMDD-NNN
 ```
 → WORK_IN_PROGRESS.md에서 상태 확인 → 재개
 
@@ -107,7 +107,7 @@ CONTINUE: WIP-20250202-001
 
 ### 작업 완료
 ```
-완료: WIP-YYYYMMDD-NN
+완료: WIP-YYYYMMDD-NNN
 ```
 → 완료 단계 모두 체크 → 완료 작업으로 이동
 
@@ -115,7 +115,7 @@ CONTINUE: WIP-20250202-001
 
 ### 작업 취소
 ```
-취소: WIP-YYYYMMDD-NN [사유]
+취소: WIP-YYYYMMDD-NNN [사유]
 ```
 → 활성 작업에서 제거 → 취소 작업으로 이동
 
@@ -128,7 +128,7 @@ CONTINUE: WIP-20250202-001
 
 ### 상태 확인
 ```
-상태: WIP-YYYYMMDD-NN
+상태: WIP-YYYYMMDD-NNN
 또는
 상태: 전체
 ```
@@ -196,7 +196,7 @@ CONTINUE: WIP-20250202-001
 
 ## 📌 WorkID 형식
 
-### 추천 형식: **WIP-YYYYMMDD-NN**
+### 추천 형식: **WIP-YYYYMMDD-NNN**
 
 ```
 WIP-20250202-001  # 2025년 2월 2일 첫 번째 작업
@@ -239,7 +239,7 @@ WIP-20250203-001  # 다음 날 첫 번째 작업
 ### 작업 중단 시
 ```
 1. "상태: 전체"로 현재 작업 확인
-2. 다음 대화에서 "재개: WIP-XXX"로 작업 재개
+2. 다음 대화에서 "재개: WIP-XXXXXXXX-NNN"로 작업 재개
 ```
 
 ---
@@ -292,7 +292,7 @@ WIP-20250203-001  # 다음 날 첫 번째 작업
 
 ### 보고서 명령어
 ```
-보고서: WIP-YYYYMMDD-NN
+보고서: WIP-YYYYMMDD-NNN
 ```
 → WORK_IN_PROGRESS.md의 완료 작업에서 보고서 생성
 
@@ -312,7 +312,7 @@ WIP-20250203-001  # 다음 날 첫 번째 작업
 }
 ```
 
-#### 마크다운 (reports/WORK_REPORT_WIP-YYYYMMDD-NN.md)
+#### 마크다운 (reports/WORK_REPORT_WIP-YYYYMMDD-NNN.md)
 ```markdown
 # 작업 보고서
 

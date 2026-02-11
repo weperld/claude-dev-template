@@ -71,19 +71,20 @@
 ## 워크플로우 파이프라인
 
 ```
-Plan → Design → Code → Test → Docs → QA → Review
+{{PIPELINE_ARROW}}
 ```
 
 각 단계마다 Gate 검증이 수행되며, 3번 실패 시 이전 단계로 롤백됩니다.
+분석/계획/설계 단계에서는 **수렴 검증**이 적용됩니다: 결과물의 누락·모호·위험 요소(필수 보완 사항)가 0건이 될 때까지 반복 점검 후 Gate로 진행합니다.
 상세 프로세스는 `WORKFLOW_PLANNING/INDEX.md`를 참조하세요.
 
 ---
 
 ## WIP 추적 시스템
 
-- **WorkID 형식**: `WIP-YYYYMMDD-NN`
-- **활성 WIP**: `.wips/active/{Stage}/WIP-{Stage}-YYYYMMDD-NN.md`
-- **완료 WIP**: `.wips/archive/{Stage}/WIP-{Stage}-YYYYMMDD-NN.md`
+- **WorkID 형식**: `WIP-YYYYMMDD-NNNN`
+- **활성 WIP**: `.wips/active/{Stage}/WIP-{Stage}-YYYYMMDD-NNN.md`
+- **완료 WIP**: `.wips/archive/{Stage}/WIP-{Stage}-YYYYMMDD-NNN.md`
 - **전체 현황**: `WORK_IN_PROGRESS.md`
 
 ---
@@ -95,7 +96,7 @@ Plan → Design → Code → Test → Docs → QA → Review
 1. **작업 시작** → `WORK_IN_PROGRESS.md`에 WorkID 및 계획 기록
 2. **각 단계 완료** → 체크박스 업데이트 + 진행 상황 타임스탬프
 3. **중단 시** → 현재 상태, 다음 할 일, 미해결 이슈를 명시적으로 기록
-4. **재개 시** → `/project:작업이어하기 WIP-YYYYMMDD-NN`으로 이전 작업 확인 후 이어서 진행
+4. **재개 시** → `/project:작업이어하기 WIP-YYYYMMDD-NNN`으로 이전 작업 확인 후 이어서 진행
 
 ---
 

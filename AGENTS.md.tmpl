@@ -148,28 +148,22 @@
 
 ---
 
-## 🔒 Cross-Stage Review Chain (강제 검증 - 검증 항목 세분화)
+## 🔒 Cross-Stage Review Chain (강제 검증)
 
-각 단계에서 다음 단계로 넘어갈 때 **reviewer**가 강제 검증을 수행합니다:
+각 단계에서 다음 단계로 넘어갈 때 **Gate 크로스체크 에이전트**가 강제 검증을 수행합니다:
 
-| 단계 전이 | 검증 담당자 | 검증 항목 (세분화) |
-|---------|------------|-------------------|
-| | Plan → Design | reviewer | **기획 관련 전문 검증 항목**:<br/>- 기획 명확성<br/>- 영향 파일 완전성<br/>- 위험 요소 식별<br/>- **기획의 현실성 검증**<br/>- **기획의 일관성 검증**<br/>- **기획의 타당성 검증**<br/>- 절대 규칙 준수 |
-| | Design → Code | reviewer | **아키텍처 관련 전문 검증 항목**:<br/>- 아키텍처 실현 가능성<br/>- 의존성 구현 가능성<br/>{{DESIGN_REVIEW_ITEMS}}<br/>- **확장성 검증**<br/>- **스케일러빌리티 검증**<br/>- **성능 고려 여부**<br/>- 절대 규칙 준수 |
-| | Code → Test | reviewer | **코드 관련 전문 검증 항목**:<br/>- 빌드 성공<br/>- 코드 스타일<br/>- 기술 규칙 준수<br/>- **코드 복잡도**<br/>- **코드 효율성**<br/>- **코드 가독성**<br/>- 절대 규칙 준수 |
-| | Test → Docs | reviewer | **테스트 관련 전문 검증 항목**:<br/>- 테스트 가능성<br/>- 버그 0개<br/>- **테스트 커버리지**<br/>- **테스트 품질**<br/>- **테스트 유지보수성**<br/>- 절대 규칙 준수 |
-| | Docs → QA | reviewer | **문서 관련 전문 검증 항목**:<br/>- 문서 완전성<br/>- 코드 일치성<br/>- **문서 명확성**<br/>- **문서 품질**<br/>- **문서 최신성**<br/>- 절대 규칙 준수 |
-| | QA → Review | reviewer | **QA 관련 전문 검증 항목**:<br/>- 절대 규칙 100% 준수<br/>- 코드 품질<br/>- 버그 0개<br/>- **성능 지표**<br/>- **보안 지표**<br/>- 절대 규칙 준수 |
+| 단계 전이 | 크로스체크 담당 | 검증 내용 |
+|---------|--------------|----------|
+{{CROSS_STAGE_REVIEW_ROWS}}
 
-> **중요**: 검증 담당자는 항상 **reviewer**입니다. 표의 "검증 항목 (세분화)"은 해당 전이 시점에 집중해야 할 검증 포인트입니다.
-
-> **전문 검증 항목 세분화**: 각 단계별로 전문 검증 항목을 세분화하여 검증 품질 향상
+> **중요**: 크로스체크 담당 에이전트는 Gate 시스템에서 정의되며, 각 단계의 전문성에 맞는 에이전트가 배정됩니다.
+> 상세 게이트 통과 조건은 `WORKFLOW_PLANNING/GATES.md`를 참조하세요.
 
 **절대 규칙 검증 포함**:
-- reviewer는 각 단계에서 **절대 규칙 준수 여부**를 반드시 검증해야 합니다.
+- 크로스체크 에이전트는 각 단계에서 **절대 규칙 준수 여부**를 반드시 검증해야 합니다.
 - 절대 규칙 위반 시 **즉시 해당 단계로 롤백**하고 **수정 요청**해야 합니다.
 
-> **강제 사항**: 각 단계 전이 시 reviewer가 검증을 완료하고 WORK_IN_PROGRESS.md에
+> **강제 사항**: 각 단계 전이 시 크로스체크 에이전트가 검증을 완료하고 WORK_IN_PROGRESS.md에
 > "크로스체크 통과 완료"를 기록하지 않은 경우, 다음 단계로 넘어갈 수 없습니다.
 
 ---
@@ -345,7 +339,7 @@
 **✅ 올바른 예시:**
 ```
 /project:신규 [기능명] 기능 추가
-→ 워크플로우가 자동으로 WorkID 생성 후 Plan → Design → Code → Test → Docs → QA → Review 순서로 진행
+→ 워크플로우가 자동으로 WorkID 생성 후 {{PIPELINE_ARROW}} 순서로 진행
 
 다음 기획서 내용을 분석해주세요:
 [문서 경로: ./docs/planning/feature_001.md]
@@ -415,9 +409,9 @@
 
 ### 작업 재개
 ```
-재개: WIP-YYYYMMDD-NN
+재개: WIP-YYYYMMDD-NNNN
 또는
-CONTINUE: WIP-YYYYMMDD-NN
+CONTINUE: WIP-YYYYMMDD-NNNN
 ```
 → WORK_IN_PROGRESS.md에서 상태 확인 → 재개
 
@@ -431,9 +425,9 @@ CONTINUE: WIP-20250202-001
 
 ### 작업 완료/취소
 ```
-완료: WIP-YYYYMMDD-NN
-취소: WIP-YYYYMMDD-NN [사유]
-상태: WIP-YYYYMMDD-NN 또는 상태: 전체
+완료: WIP-YYYYMMDD-NNNN
+취소: WIP-YYYYMMDD-NNNN [사유]
+상태: WIP-YYYYMMDD-NNNN 또는 상태: 전체
 ```
 
 ---
@@ -522,7 +516,7 @@ CONTINUE: WIP-20250202-001
 
 ### WorkID 형식
 ```
-WIP-YYYYMMDD-NN
+WIP-YYYYMMDD-NNNN
 예: WIP-20250202-001
 ```
 
@@ -620,34 +614,14 @@ WIP-YYYYMMDD-NN
 
 ### 전체 폴더 구조
 ```
-.wips/
-├── templates/           # 템플릿 파일 (읽기 전용)
-│   ├── WIP-Plan-YYYYMMDD-NN.md
-│   ├── WIP-Design-YYYYMMDD-NN.md
-│   ├── WIP-Code-YYYYMMDD-NN.md
-│   ├── WIP-Test-YYYYMMDD-NN.md
-│   ├── WIP-Docs-YYYYMMDD-NN.md
-│   └── WIP-QA-YYYYMMDD-NN.md
-└── active/              # 독립 WIP 작성 폴더 (쓰기 전용)
-    ├── Plan/
-    ├── Design/
-    ├── Code/
-    ├── Test/
-    ├── Docs/
-    └── QA/
+{{WIP_FOLDER_TREE}}
 ```
 
 ### 에이전트별 매핑 테이블
 
 | 에이전트 | 담당 스테이지 | 템플릿 파일 | 작성 폴더 | 템플릿 경로 | 작성 경로 |
 |---------|-------------|-----------|-----------|-----------|----------|
-| **analyst** | Plan | `WIP-Plan-YYYYMMDD-NN.md` | `.wips/active/Plan/` | `.wips/templates/WIP-Plan-YYYYMMDD-NN.md` | `.wips/active/Plan/WIP-Plan-YYYYMMDD-NN.md` |
-| **architect** | Design | `WIP-Design-YYYYMMDD-NN.md` | `.wips/active/Design/` | `.wips/templates/WIP-Design-YYYYMMDD-NN.md` | `.wips/active/Design/WIP-Design-YYYYMMDD-NN.md` |
-| **developer** | Code | `WIP-Code-YYYYMMDD-NN.md` | `.wips/active/Code/` | `.wips/templates/WIP-Code-YYYYMMDD-NN.md` | `.wips/active/Code/WIP-Code-YYYYMMDD-NN.md` |
-| **tester** | Test | `WIP-Test-YYYYMMDD-NN.md` | `.wips/active/Test/` | `.wips/templates/WIP-Test-YYYYMMDD-NN.md` | `.wips/active/Test/WIP-Test-YYYYMMDD-NN.md` |
-| **doc-manager** | Docs | `WIP-Docs-YYYYMMDD-NN.md` | `.wips/active/Docs/` | `.wips/templates/WIP-Docs-YYYYMMDD-NN.md` | `.wips/active/Docs/WIP-Docs-YYYYMMDD-NN.md` |
-| **reviewer** | QA | `WIP-QA-YYYYMMDD-NN.md` | `.wips/active/QA/` | `.wips/templates/WIP-QA-YYYYMMDD-NN.md` | `.wips/active/QA/WIP-QA-YYYYMMDD-NN.md` |
-| **coordinator** | Review | (전체 관리) | (해당 없음) | - | - |
+{{AGENT_STAGE_TABLE}}
 
 ### 절대 규칙
 
@@ -662,7 +636,7 @@ WIP-YYYYMMDD-NN
 
 ### 파일명 플레이스홀더
 
-**템플릿 파일 형식**: `WIP-{Stage}-YYYYMMDD-NN.md`
+**템플릿 파일 형식**: `WIP-{Stage}-YYYYMMDD-NNN.md`
 - `{Stage}`: 스테이지 이름 (Plan, Design, Code, Test, Docs, QA)
 - `YYYYMMDD`: 날짜 플레이스홀더 (변경 불필요)
 - `NN`: 순번 플레이스홀더 (변경 불필요)
@@ -678,7 +652,7 @@ WIP-YYYYMMDD-NN
 
 | 항목 | 템플릿 내용 | 변경 대상 | 예시 |
 |------|-----------|----------|------|
-| WorkID | `WIP-YYYYMMDD-NN` | 실제 WorkID | `WIP-20250208-001` |
+| WorkID | `WIP-YYYYMMDD-NNNN` | 실제 WorkID | `WIP-20250208-001` |
 | 생성일 | `YYYY-MM-DD` | 실제 날짜 | `2025-02-08` |
 | 상태 | `준비 / 진행 중 / 완료 / 취소` | 작업 상태 | `진행 중` |
 
@@ -789,7 +763,7 @@ WIP-YYYYMMDD-NN
 
 #### 1. 템플릿 파일 읽기
 ```
-.wips/templates/WIP-Plan-YYYYMMDD-NN.md
+.wips/templates/WIP-Plan-YYYYMMDD-NNN.md
 ```
 
 #### 2. 독립 WIP 파일 생성 및 복사

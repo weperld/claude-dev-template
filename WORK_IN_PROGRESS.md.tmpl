@@ -8,9 +8,9 @@
 
 ### 새 대화에서 재개 시
 ```
-1. 사용자: "재개: WIP-YYYYMMDD-NN"
+1. 사용자: "재개: WIP-YYYYMMDD-NNN"
    또는
-   사용자: "CONTINUE: WIP-YYYYMMDD-NN"
+   사용자: "CONTINUE: WIP-YYYYMMDD-NNN"
 
 2. 에이전트:
    - WORK_IN_PROGRESS.md 읽기
@@ -20,7 +20,7 @@
    - 즉시 재개
 
 3. 재개 완료 후:
-   - "🔄 WIP-YYYYMMDD-NN 작업이 재개되었습니다"
+   - "🔄 WIP-YYYYMMDD-NNN 작업이 재개되었습니다"
    - "현재 단계: [완료된 단계]"
    - "다음 작업: [다음 작업]"
 ```
@@ -48,7 +48,7 @@
 
 ## 📝 작업 상세
 
-### WIP-YYYYMMDD-NN: [작업 제목]
+### WIP-YYYYMMDD-NNN: [작업 제목]
 
 #### 📋 계획 요약
 - **유형**: (수정/신규)
@@ -70,56 +70,10 @@
 ```
 
 #### ✅ 완료 단계
-- [ ] 1. Plan (계획): 기획서 분석, 유형 판단, 계획 수립
-- [ ] 2. Design (설계): 아키텍처 설계, 기술적 검증
-- [ ] 3. Code (코딩): 코드 구현, 빌드 확인
-- [ ] 4. Test (테스트): 단위 테스트 자동 생성, 기능 테스트, 빌드 테스트
-- [ ] 5. Docs (문서화): 각 단계별 문서 업데이트, API 문서 생성
-- [ ] 6. QA (품질검사): 코드 품질, 스타일, 아키텍처 준수 검토
-- [ ] 7. Review (최종검토): 전체 결과물 종합 검토, 최종 승인
+{{WIP_COMPLETED_STEPS}}
 
 #### 🚪 Validation Gates (검증 게이트)
-- [ ] **Gate-1**: Plan → Design
-  - [ ] 1차 자체 검증 (analyst)
-  - [ ] 2차 자체 검증 (analyst)
-  - [ ] 크로스체크 (architect)
-  - 상태: 대기 중
-
-- [ ] **Gate-2**: Design → Code
-  - [ ] 1차 자체 검증 (architect)
-  - [ ] 2차 자체 검증 (architect)
-  - [ ] 크로스체크 (developer)
-  - 상태: 대기 중
-
-- [ ] **Gate-3**: Code → Test
-  - [ ] 1차 빌드 검증 (developer)
-  - [ ] 2차 빌드 검증 (developer)
-  - [ ] 크로스 빌드 검증 (tester)
-  - 상태: 대기 중
-
-- [ ] **Gate-4**: Test → Docs
-  - [ ] 1차 테스트 (tester)
-  - [ ] 2차 테스트 (tester)
-  - [ ] 크로스 테스트 (developer)
-  - 상태: 대기 중
-
-- [ ] **Gate-5**: Docs → QA
-  - [ ] 1차 검증 (doc-manager)
-  - [ ] 2차 검증 (doc-manager)
-  - [ ] 크로스체크 (reviewer)
-  - 상태: 대기 중
-
-- [ ] **Gate-6**: QA → Review
-  - [ ] 1차 검증 (reviewer)
-  - [ ] 2차 검증 (reviewer)
-  - [ ] 크로스 검증 (architect)
-  - 상태: 대기 중
-
-- [ ] **Gate-7**: Review → 완료
-  - [ ] 1차 최종 검증 (coordinator)
-  - [ ] 2차 최종 검증 (coordinator)
-  - [ ] 사용자 승인
-  - 상태: 대기 중
+{{WIP_VALIDATION_GATES}}
 
 #### 🚧 진행 상황
 ```
@@ -138,12 +92,12 @@
 
 ## 🎯 WorkID 형식
 
-### 추천 형식: **WIP-YYYYMMDD-NN**
+### 추천 형식: **WIP-YYYYMMDD-NNN**
 
 **구조:**
 - `WIP`: Work In Progress (고정 접두사)
 - `YYYYMMDD`: 날짜 (예: 20250202)
-- `NN`: 같은 날짜 내 순서 (01, 02, 03...)
+- `NNN`: 같은 날짜 내 순서, 3자리 0패딩 (001, 002, 003...)
 
 **예시:**
 ```
@@ -164,21 +118,21 @@ WIP-20250203-001  # 다음 날 첫 번째 작업
 
 ### 작업 재개
 ```
-재개: WIP-YYYYMMDD-NN
+재개: WIP-YYYYMMDD-NNN
 또는
-CONTINUE: WIP-YYYYMMDD-NN
+CONTINUE: WIP-YYYYMMDD-NNN
 ```
 
 ### 작업 완료
 ```
-완료: WIP-YYYYMMDD-NN
+완료: WIP-YYYYMMDD-NNN
 ```
 → 완료 단계 모두 체크
 → 완료 작업으로 이동
 
 ### 작업 취소
 ```
-취소: WIP-YYYYMMDD-NN [사유]
+취소: WIP-YYYYMMDD-NNN [사유]
 ```
 → 활성 작업에서 제거
 → 취소 작업으로 이동
@@ -186,7 +140,7 @@ CONTINUE: WIP-YYYYMMDD-NN
 
 ### 상태 확인
 ```
-상태: WIP-YYYYMMDD-NN
+상태: WIP-YYYYMMDD-NNN
 또는
 상태: 전체
 ```
@@ -220,7 +174,7 @@ CONTINUE: WIP-YYYYMMDD-NN
 ### 완료 작업 (히스토리)
 | WorkID | 완료일 | 유형 | 제목 | 소요시간 |
 |--------|--------|------|------|----------|
-| WIP-YYYYMMDD-NN | YYYY-MM-DD | 수정 | 작업 제목 | Xh |
+| WIP-YYYYMMDD-NNN | YYYY-MM-DD | 수정 | 작업 제목 | Xh |
 ```
 
 ### 4. 활성 작업에서 제거
@@ -235,7 +189,7 @@ CONTINUE: WIP-YYYYMMDD-NN
 ```markdown
 ### 완료된 작업 상세
 
-#### WIP-YYYYMMDD-NN: 작업 제목
+#### WIP-YYYYMMDD-NNN: 작업 제목
 
 **완료일:** YYYY-MM-DD HH:MM
 **소요 시간:** X시간
@@ -250,7 +204,7 @@ CONTINUE: WIP-YYYYMMDD-NN
 
 ### 1. 취소 사유 기록
 ```
-사용자: "취소: WIP-YYYYMMDD-NN 우선순위 조정으로 인해"
+사용자: "취소: WIP-YYYYMMDD-NNN 우선순위 조정으로 인해"
 ```
 
 ### 2. 활성 작업에서 제거
@@ -266,7 +220,7 @@ CONTINUE: WIP-YYYYMMDD-NN
 ### 취소된 작업 (취소 히스토리)
 | WorkID | 취소일 | 유형 | 제목 | 사유 |
 |--------|--------|------|------|------|
-| WIP-YYYYMMDD-NN | YYYY-MM-DD HH:MM | 수정 | 작업 제목 | 우선순위 조정 |
+| WIP-YYYYMMDD-NNN | YYYY-MM-DD HH:MM | 수정 | 작업 제목 | 우선순위 조정 |
 ```
 
 ---
@@ -275,7 +229,7 @@ CONTINUE: WIP-YYYYMMDD-NN
 
 ### 특정 작업 상태
 ```
-상태: WIP-YYYYMMDD-NN
+상태: WIP-YYYYMMDD-NNN
 ```
 → 해당 WorkID의 상세 상태 출력
 
@@ -292,10 +246,10 @@ CONTINUE: WIP-YYYYMMDD-NN
 ### 시나리오 1: 새 대화에서 작업 재개
 
 ```
-사용자: "재개: WIP-YYYYMMDD-NN"
+사용자: "재개: WIP-YYYYMMDD-NNN"
 
 에이전트:
-🔄 WIP-YYYYMMDD-NN 작업이 재개되었습니다.
+🔄 WIP-YYYYMMDD-NNN 작업이 재개되었습니다.
 
 현재 단계: 구현 단계2 (완료)
 다음 작업: 빌드 테스트
@@ -312,7 +266,7 @@ CONTINUE: WIP-YYYYMMDD-NN
 ## 🎯 에이전트 동작 가이드
 
 ### 작업 시작 시
-1. 새로운 WorkID 생성: `WIP-YYYYMMDD-NN` (최대 3번 재시도로 충돌 방지)
+1. 새로운 WorkID 생성: `WIP-YYYYMMDD-NNN` (최대 3번 재시도로 충돌 방지)
 2. 활성 작업에 추가
 3. 상세 정보 기록
 
@@ -346,6 +300,6 @@ CONTINUE: WIP-YYYYMMDD-NN
 
 ## 📚 관련 문서
 
-- [기획서 워크플로우](WORKFLOW_PLANNING.md)
+- [기획서 워크플로우](WORKFLOW_PLANNING/INDEX.md)
 - [빠른 참조](QUICK_REFERENCE.md)
 - [프로젝트 요약](PROJECT_SUMMARY.md)

@@ -11,7 +11,7 @@
 ```
 ✅ 작업 완료!
 
-[WorkID]: WIP-YYYYMMDD-NN
+[WorkID]: WIP-YYYYMMDD-NNN
 [완료일]: 2025-02-02 16:30
 [소요 시간]: 6.5시간
 
@@ -33,109 +33,7 @@
 
 ---
 
-## 📌 에이전트용 지시 단축
-
-### 기능 수정 요청
-```
-수정: [파일명] [문제 설명]
-또는
-수정: ExportService.cs:20 null 체크 추가
-```
-→ 유형A 분석 → 계획 → 확인 → 구현
-
----
-
-### 새로운 기능 요청
-```
-신규: [기능 설명]
-또는
-신규: CSV 데이터 추출 기능 추가
-```
-→ 유형B 분석 → 계획 → 확인 → 구현
-
----
-
-### 기획서 파일 전달
-```
-기획: [파일경로]
-또는
-기획: ./docs/planning/feature_001.md
-```
-→ 파일 읽기 → 분석 → 계획 → 확인 → 구현
-
----
-
-### 기획서 내용 직접 전달
-```
-기획: "엑셀 데이터를 CSV 형식으로도 추출 가능하게 해줘"
-```
-→ 텍스트 분석 → 유형 판단 → 계획 → 확인 → 구현
-
----
-
-## 🎯 자동 유형 판단 로직
-
-### 키워드 기반 판단
-
-| 입력 내용 | 유형 | 이유 |
-|-----------|------|------|
-| "버그", "오류", "fix" | 수정 | 문제 해결 |
-| "개선", "최적화", "refactor" | 수정 | 향상 |
-| "신규", "추가", "create", "new" | 신규 | 새로운 것 |
-| "컴포넌트", "모듈" | 신규 | 새 컴포넌트 |
-| "화면", "UI" | 신규 | UI 요소 |
-
-### 애매한 경우
-- 기존 기능과 관련 있으면 "수정"
-- 완전히 새로운 것이면 "신규"
-- 확실하지 않으면 사용자에게 문의
-
----
-
-## 🔍 분석 예시
-
-### 예시 1: 기능 수정
-```
-사용자: "수정: ExportService에서 null 참조 버그 수정"
-
-에이전트:
-1. 유형: 기능 수정 (버그 수정)
-2. 영향 파일: Services/ExportService.cs
-3. 위험: 데이터 무결성 영향 가능
-4. 계획 수립
-5. 사용자 확인 요청
-```
-
----
-
-### 예시 2: 새로운 기능
-```
-사용자: "신규: CSV 데이터 추출 기능 추가"
-
-에이전트:
-1. 유형: 새로운 기능
-2. 카테고리: StaticData (기존 카테고리 확장)
-3. 필요 파일:
-   - Services/Processors/CSVProcessor.cs (신규)
-   - ViewModels/CSVExecutionViewModel.cs (신규)
-   - Views/ExecutionItems/CSVExecutionView.xaml (신규)
-4. 계획 수립
-5. 사용자 확인 요청
-```
-
----
-
-### 예시 3: 기획서 파일
-```
-사용자: "기획: ./docs/planning/export_enhancement.md"
-
-에이전트:
-1. 파일 읽기
-2. 내용 분석
-3. 유형 판단 (문서에 명시되어 있으면 따름)
-4. 계획 수립
-5. 사용자 확인 요청
-```
+> **참고**: 에이전트 지시 단축, 유형 판단 로직, 분석 예시는 [GATES.md](GATES.md) 및 [AGENTS.md](../AGENTS.md)를 참조하세요.
 
 ---
 
@@ -143,7 +41,7 @@
 
 ### 보고서 명령어
 ```
-보고서: WIP-YYYYMMDD-NN
+보고서: WIP-YYYYMMDD-NNN
 ```
 
 ### 보고서 형식
@@ -180,7 +78,7 @@
 }
 ```
 
-#### 마크다운 형식 (reports/WORK_REPORT_WIP-YYYYMMDD-NN.md)
+#### 마크다운 형식 (reports/WORK_REPORT_WIP-YYYYMMDD-NNN.md)
 ```markdown
 # 작업 보고서
 
@@ -230,14 +128,14 @@
 → WORK_HISTORY.json 업데이트
 
 내보내기: markdown
-→ reports/WORK_REPORT_WIP-YYYYMMDD-NN.md 생성
+→ reports/WORK_REPORT_WIP-YYYYMMDD-NNN.md 생성
 ```
 
 ---
 
 ## 📚 관련 모듈
 
-- [PIPELINE.md](PIPELINE.md) - 7단계 개발 파이프라인
+- [PIPELINE.md](PIPELINE.md) - 개발 파이프라인
 - [GATES.md](GATES.md) - Gate 검증 시스템
 - [AUTO_UPDATE.md](AUTO_UPDATE.md) - WorkID 및 자동 업데이트 시스템
 - [ERROR_HANDLING.md](ERROR_HANDLING.md) - 에러 처리 및 롤백 프로토콜
