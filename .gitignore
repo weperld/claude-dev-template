@@ -1,0 +1,15 @@
+# 사용자별 설정 (example은 유지)
+template-config.json
+
+# init 스크립트 실행 시 생성되는 출력 디렉토리
+output/
+
+# OS 파일
+Thumbs.db
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
