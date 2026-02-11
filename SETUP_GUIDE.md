@@ -11,9 +11,9 @@
 ## 개요
 
 이 템플릿은 다음을 제공합니다:
-- **7단계 파이프라인**: Plan → Design → Code → Test → Docs → QA → Review
+- **개발 파이프라인**: 프리셋별 3~7단계 (lite/standard/full)
 - **Gate 검증 시스템**: 각 단계 통과 조건 + 크로스체크
-- **WIP 추적**: WorkID 기반 작업 관리 (WIP-YYYYMMDD-NN)
+- **WIP 추적**: WorkID 기반 작업 관리 (WIP-YYYYMMDD-NNN)
 - **14개 커스텀 명령어**: 신규, 수정, 긴급버그, 상태, 완료, 취소, 작업이어하기, 내보내기, 요약, 커밋, 전송, 푸시, 릴리즈, 명령어
 - **에이전트 시스템**: 역할별 에이전트 (analyst, architect, developer, tester, doc-manager, reviewer, coordinator)
 - **에러 핸들링**: 롤백 프로토콜, 충돌 방지
@@ -96,6 +96,14 @@
   권장: 처음 사용한다면 standard, 팀 프로젝트라면 full
 ```
 
+#### 프리셋 비교표
+
+| 프리셋 | 단계 수 | 포함 단계 | 권장 대상 |
+|--------|---------|----------|-----------|
+| lite | 3단계 | Plan → Code → Review | 소규모/빠른 작업, 프로토타이핑 |
+| standard | 5단계 | Plan → Code → Test → Docs → Review | 일반 프로젝트, 중규모 개발 |
+| full | 7단계 | Plan → Design → Code → Test → Docs → QA → Review | 대규모/엄격한 프로젝트, 팀 개발 |
+
 ---
 
 ### Phase 2: template-config.json 생성
@@ -147,7 +155,7 @@
 git clone https://github.com/weperld/claude-dev-template.git _template_temp
 ```
 
-#### 방법 A: init.ps1 사용 (Windows PowerShell)
+#### 방법 A-1: init.ps1 사용 (Windows PowerShell)
 
 ```powershell
 # 1. 생성한 template-config.json을 임시 디렉토리에 배치
@@ -165,20 +173,44 @@ Set-Location "_template_temp"
 #   - .claude/commands/ (디렉토리 전체)
 #   - .guides/ (디렉토리 전체)
 #   - .wips/ (디렉토리 전체, templates/와 active/ 포함)
+#   - reports/ (디렉토리)
+#   - WORK_HISTORY.json
 
 # 4. 임시 디렉토리 정리
 Set-Location ..
 Remove-Item "_template_temp" -Recurse -Force
 ```
 
-#### 방법 B: 에이전트가 직접 수행 (크로스 플랫폼, 권장)
+#### 방법 A-2: init.sh 사용 (Linux/macOS Bash)
+
+```bash
+# 의존성: jq (brew install jq / apt-get install jq)
+
+# 1. 생성한 template-config.json을 임시 디렉토리에 배치
+cp "[생성한 config 경로]" "_template_temp/template-config.json"
+
+# 2. init.sh 실행
+cd "_template_temp"
+chmod +x init.sh
+./init.sh
+
+# 3. 생성된 파일들을 프로젝트 루트로 이동 (방법 A-1과 동일한 파일 목록)
+
+# 4. 임시 디렉토리 정리
+cd ..
+rm -rf "_template_temp"
+```
+
+#### 방법 B: 에이전트가 직접 수행 (init 스크립트 사용 불가 시)
+
+> **참고**: 방법 B는 50개 이상의 변수 치환과 동적 컨텐츠 생성이 필요합니다.
+> 가능하면 **방법 A-1 또는 A-2 사용을 권장**합니다.
+> 방법 B를 사용해야 하는 경우, [METHOD_B_REFERENCE.md](METHOD_B_REFERENCE.md)에서 상세 알고리즘과 예시를 참고하세요.
 
 에이전트가 다음 순서로 직접 파일을 생성/복사합니다:
 
 1. **범용 파일 복사** (변수 치환 없이 그대로):
    - `AGENT_ROLES.md` → 프로젝트 루트
-   - `WORK_IN_PROGRESS.md` → 프로젝트 루트
-   - `WORKFLOW_PLANNING/PIPELINE.md` → 프로젝트 루트
    - `WORKFLOW_PLANNING/AUTO_UPDATE.md` → 프로젝트 루트
    - `WORKFLOW_PLANNING/ERROR_HANDLING.md` → 프로젝트 루트
    - `WORKFLOW_PLANNING/REPORTS.md` → 프로젝트 루트
@@ -198,14 +230,18 @@ Remove-Item "_template_temp" -Recurse -Force
    - `.claude/commands/명령어.md.tmpl` → `.claude/commands/명령어.md`
    - `.guides/WORKFLOW_GUIDE.md.tmpl` → `.guides/WORKFLOW_GUIDE.md`
    - `.guides/PLANNING_TEMPLATE.md.tmpl` → `.guides/PLANNING_TEMPLATE.md`
+   - `WORK_IN_PROGRESS.md.tmpl` → `WORK_IN_PROGRESS.md`
+   - `WORKFLOW_PLANNING/PIPELINE.md.tmpl` → `WORKFLOW_PLANNING/PIPELINE.md`
 
 3. **WIP 템플릿 생성** (`META-TEMPLATE.md` + `stages.json` 조합):
    - 프리셋에 포함된 각 스테이지별로 WIP 템플릿 생성
-   - `.wips/templates/WIP-{Stage}-YYYYMMDD-NN.md`
+   - `.wips/templates/WIP-{Stage}-YYYYMMDD-NNN.md`
 
-4. **디렉토리 구조 생성**:
-   - `.wips/active/{Stage}/` (각 스테이지별)
+4. **디렉토리 구조 및 초기 파일 생성**:
+   - `.wips/active/{Stage}/` (각 스테이지별, .gitkeep 포함)
    - `.wips/archive/`
+   - `reports/` (.gitkeep 포함)
+   - `WORK_HISTORY.json` (초기값: `{"completed_works":[],"cancelled_works":[]}`)
 
 5. **스켈레톤 파일 복사** (사용자가 내용을 채울 파일):
    - `.guides/BUILD_GUIDE.example.md` → `.guides/BUILD_GUIDE.md`
@@ -239,7 +275,7 @@ Remove-Item "_template_temp" -Recurse -Force
    - `CLAUDE.md` - 진입점 (프로젝트 루트)
    - `AGENTS.md` - 에이전트 규칙
    - `.claude/commands/` - 14개 명령어 파일
-   - `WORKFLOW_PLANNING/` - 5개 모듈
+   - `WORKFLOW_PLANNING/` - 6개 모듈
    - `.wips/` - 템플릿 + active 디렉토리
    - `.guides/` - 가이드 파일들
 
@@ -261,44 +297,147 @@ Remove-Item "_template_temp" -Recurse -Force
 
 ---
 
+## 커스텀 프리셋 가이드
+
+기본 프리셋(lite/standard/full) 외에 프로젝트에 맞는 커스텀 프리셋을 만들 수 있습니다.
+
+### 프리셋 파일 구조
+
+`presets/` 디렉토리에 JSON 파일을 생성합니다:
+
+```json
+{
+  "name": "프리셋 표시명",
+  "description": "프리셋 설명",
+  "stages": ["Stage1", "Stage2", ..., "Review"],
+  "agents": {
+    "Stage1": { "agent": "에이전트명", "crosscheckAgent": "크로스체크 에이전트명", "gate": "Gate-1" },
+    "Stage2": { "agent": "에이전트명", "crosscheckAgent": "크로스체크 에이전트명", "gate": "Gate-2" },
+    "Review": { "agent": "coordinator명", "crosscheckAgent": null, "gate": "Gate-N" }
+  }
+}
+```
+
+### 필수 규칙
+
+1. **stages 배열**: 마지막 단계는 반드시 `crosscheckAgent: null`인 최종 검토 단계여야 합니다.
+2. **stages.json 참조**: `stages` 배열의 모든 단계명은 `.wips/stages.json`에 정의되어 있어야 합니다.
+3. **gate 번호**: Gate-1부터 순서대로 부여합니다 (실제 치환 시 자동 계산되므로 참고용).
+4. **agents 키**: stages 배열의 각 단계와 1:1 매핑되어야 합니다.
+
+### 새 스테이지 추가 방법
+
+기존 stages.json에 없는 단계를 사용하려면:
+
+1. `.wips/stages.json`에 새 스테이지 메타데이터를 추가합니다:
+   ```json
+   "NewStage": {
+     "agent": "기본 에이전트명",
+     "crosscheckAgent": "기본 크로스체크 에이전트명",
+     "summary": "단계 요약 설명",
+     "koreanName": "한국어명",
+     "rollbackTo": "롤백 대상 단계명 또는 null",
+     "gateChecks": ["검증 항목 1", "검증 항목 2"],
+     "langRules": "",
+     "step1": "- [ ] 체크리스트 항목",
+     "step2": "- [ ] 체크리스트 항목",
+     "step3": "- [ ] 체크리스트 항목",
+     "results": "## 결과 템플릿"
+   }
+   ```
+2. 프리셋 JSON의 `stages` 배열과 `agents` 객체에 해당 단계를 추가합니다.
+3. init 스크립트를 실행하면 자동으로 WIP 템플릿과 동적 변수가 생성됩니다.
+
+### 사용 방법
+
+`template-config.json`에서 프리셋명을 지정합니다:
+```json
+{
+  "pipeline": {
+    "preset": "커스텀프리셋파일명"
+  }
+}
+```
+
+> **주의**: `stages.json`에 정의되지 않은 스테이지를 프리셋에 포함하면 경고와 함께 해당 단계가 건너뛰어집니다.
+
+---
+
 ## 변수 치환 참조표
 
-### template-config.json → .tmpl 파일 매핑
+### A. 사용자 설정 변수 (template-config.json → .tmpl)
 
-| 변수 | config 경로 | 사용되는 파일 |
-|------|------------|--------------|
-| `{{PROJECT_NAME}}` | project.name | CLAUDE.md, QUICK_REFERENCE.md, 명령어.md 등 |
-| `{{PROJECT_DESCRIPTION}}` | project.description | CLAUDE.md |
-| `{{TECH_STACK}}` | project.techStack | CLAUDE.md, AGENTS.md |
-| `{{LIBRARIES}}` | project.libraries | CLAUDE.md |
-| `{{BUILD_COMMAND}}` | project.buildCommand | 릴리즈.md, CLAUDE.md |
-| `{{TEST_COMMAND}}` | project.testCommand | CLAUDE.md |
-| `{{RUN_COMMAND}}` | project.runCommand | CLAUDE.md |
-| `{{PROJECT_FILE}}` | project.projectFile | WORKFLOW_GUIDE.md |
-| `{{PROJECT_STRUCTURE}}` | project.projectStructure | CLAUDE.md |
-| `{{NAMING_CONVENTIONS}}` | project.namingConventions | CLAUDE.md |
-| `{{FEATURE_CATEGORIES}}` | project.featureCategories | CLAUDE.md |
-| `{{OUTPUT_FORMATS}}` | project.outputFormats | CLAUDE.md |
-| `{{CLI_OPTIONS}}` | project.cliOptions | CLAUDE.md |
-| `{{DOMAIN_RULES}}` | project.domainRules | CLAUDE.md |
-| `{{TYPE_SAFETY_RULES}}` | languageRules.typeSafety | AGENTS.md |
-| `{{TYPE_SAFETY_ANTIPATTERNS}}` | languageRules.antiPatterns | AGENTS.md |
-| `{{ARCHITECT_LANG_RULES}}` | languageRules.architectRules | AGENTS.md |
-| `{{DEVELOPER_LANG_RULES}}` | languageRules.developerRules | AGENTS.md |
-| `{{VALIDATION_ITEMS}}` | languageRules.validationItems | AGENTS.md, GATES.md, WIP |
-| `{{DESIGN_REVIEW_ITEMS}}` | languageRules.designReviewItems | AGENTS.md |
-| `{{HARD_BLOCKS_SUMMARY}}` | (자동 생성) | CLAUDE.md |
-| `{{ABSOLUTE_RULES_SUMMARY}}` | (자동 생성) | AGENTS.md |
+config에서 직접 대입되는 변수입니다. 필수(R) / 선택(O) 구분에 유의하세요.
 
-### stages.json → META-TEMPLATE.md 매핑
+| 변수 | config 경로 | 필수 | 사용되는 파일 |
+|------|------------|:----:|--------------|
+| `{{PROJECT_NAME}}` | project.name | R | CLAUDE.md, QUICK_REFERENCE.md, 명령어.md 등 |
+| `{{PROJECT_DESCRIPTION}}` | project.description | R | CLAUDE.md |
+| `{{TECH_STACK}}` | project.techStack | R | CLAUDE.md, AGENTS.md |
+| `{{LIBRARIES}}` | project.libraries | R | CLAUDE.md |
+| `{{BUILD_COMMAND}}` | project.buildCommand | R | CLAUDE.md, QUICK_REFERENCE.md, 릴리즈.md |
+| `{{TEST_COMMAND}}` | project.testCommand | R | CLAUDE.md |
+| `{{RUN_COMMAND}}` | project.runCommand | R | CLAUDE.md, QUICK_REFERENCE.md |
+| `{{PROJECT_FILE}}` | project.projectFile | R | WORKFLOW_GUIDE.md |
+| `{{PROJECT_STRUCTURE}}` | project.projectStructure | R | CLAUDE.md, QUICK_REFERENCE.md |
+| `{{NAMING_CONVENTIONS}}` | project.namingConventions | R | CLAUDE.md, QUICK_REFERENCE.md |
+| `{{FEATURE_CATEGORIES}}` | project.featureCategories | R | CLAUDE.md, GATES.md |
+| `{{OUTPUT_FORMATS}}` | project.outputFormats | R | CLAUDE.md |
+| `{{CLI_OPTIONS}}` | project.cliOptions | R | CLAUDE.md, QUICK_REFERENCE.md |
+| `{{DOMAIN_RULES}}` | project.domainRules | R | CLAUDE.md |
+| `{{TYPE_SAFETY_RULES}}` | languageRules.typeSafety | R | AGENTS.md |
+| `{{TYPE_SAFETY_ANTIPATTERNS}}` | languageRules.antiPatterns | R | AGENTS.md |
+| `{{ARCHITECT_LANG_RULES}}` | languageRules.architectRules | R | AGENTS.md |
+| `{{DEVELOPER_LANG_RULES}}` | languageRules.developerRules | R | AGENTS.md |
+| `{{VALIDATION_ITEMS}}` | languageRules.validationItems | R | AGENTS.md, GATES.md, WIP |
+| `{{DESIGN_REVIEW_ITEMS}}` | languageRules.designReviewItems | R | AGENTS.md |
+| `{{BUILD_ERROR_CHECKLIST}}` | languageRules.buildErrorChecklist | O | QUICK_REFERENCE.md |
+| `{{RUNTIME_ERROR_CHECKLIST}}` | languageRules.runtimeErrorChecklist | O | QUICK_REFERENCE.md |
+| `{{TECHNICAL_PRINCIPLES}}` | languageRules.technicalPrinciples | O | QUICK_REFERENCE.md |
+| `{{CODE_PATTERNS}}` | languageRules.codePatterns | O | QUICK_REFERENCE.md |
+
+### B. 자동 생성 변수 (init 스크립트가 동적으로 생성)
+
+preset + stages.json 조합으로 init 스크립트가 자동 생성하는 변수입니다.
+방법 B 사용 시 에이전트가 직접 생성해야 합니다 ([METHOD_B_REFERENCE.md](METHOD_B_REFERENCE.md) 참고).
+
+| 변수 | 생성 로직 | 사용되는 파일 |
+|------|----------|--------------|
+| `{{COMMAND_COUNT}}` | 고정값 "14" | CLAUDE.md |
+| `{{HARD_BLOCKS_SUMMARY}}` | typeSafety + 고정 규칙 조합 | CLAUDE.md |
+| `{{ABSOLUTE_RULES_SUMMARY}}` | HARD_BLOCKS_SUMMARY와 동일 | AGENTS.md |
+| `{{PIPELINE_ARROW}}` | 스테이지명을 " → "로 연결 | CLAUDE.md, AGENTS.md |
+| `{{GATED_PIPELINE_ARROW}}` | 스테이지명과 Gate를 교차 배치 | GATES.md |
+| `{{STAGE_COUNT}}` | 프리셋 스테이지 수 | PIPELINE.md, QUICK_REFERENCE.md |
+| `{{PIPELINE_STAGES_LIST}}` | 번호+한글명+요약 목록 | PIPELINE.md |
+| `{{PIPELINE_WORKFLOW_AUTO}}` | 자동화 모드 워크플로우 | PIPELINE.md |
+| `{{WIP_COMPLETED_STEPS}}` | 체크박스 형태 완료 단계 목록 | WORK_IN_PROGRESS.md |
+| `{{WIP_VALIDATION_GATES}}` | Gate별 검증 섹션 | WORK_IN_PROGRESS.md |
+| `{{GATE_OVERVIEW_TABLE}}` | Gate 요약 테이블 (롤백 포함) | GATES.md |
+| `{{GATE_DETAILS}}` | Gate별 상세 체크리스트 | GATES.md |
+| `{{CROSS_STAGE_REVIEW_ROWS}}` | 에이전트 크로스체크 테이블 행 | AGENTS.md |
+| `{{WIP_FOLDER_TREE}}` | .wips/ 디렉토리 트리 | AGENTS.md |
+| `{{AGENT_STAGE_TABLE}}` | 에이전트-스테이지 매핑 테이블 | AGENTS.md |
+
+### C. 별칭 변수 (다른 변수와 동일한 값)
+
+| 변수 | 원본 | 설명 |
+|------|------|------|
+| `{{LANG_RULES}}` | = `{{VALIDATION_ITEMS}}` | WIP 템플릿 내 언어별 규칙 |
+| `{{LANGUAGE_SPECIFIC_GATE_CHECKS}}` | = `{{VALIDATION_ITEMS}}` | GATES.md 내 Gate 체크 항목 |
+| `{{PROJECT_FILE_STRUCTURE}}` | = `{{PROJECT_STRUCTURE}}` | GATES.md 내 프로젝트 구조 |
+| `{{PROJECT_EXAMPLES}}` | = `{{PROJECT_STRUCTURE}}` | PLANNING_TEMPLATE.md 내 프로젝트 예시 |
+
+### D. WIP 템플릿 변수 (stages.json → META-TEMPLATE.md)
+
+스테이지별로 반복 생성되는 WIP 템플릿 내부 변수입니다.
 
 | 변수 | stages.json 경로 | 설명 |
 |------|-----------------|------|
 | `{{STAGE}}` | (키 이름) | Plan, Design, Code 등 |
 | `{{AGENT}}` | {stage}.agent | 담당 에이전트 |
 | `{{CROSSCHECK_AGENT}}` | {stage}.crosscheckAgent | 크로스체크 에이전트 |
-| `{{GATE}}` | {stage}.gate | Gate 이름 |
-| `{{LANG_RULES}}` | {stage}.langRules | 언어별 규칙 ({{VALIDATION_ITEMS}} 참조) |
+| `{{GATE}}` | (프리셋 기반 위치 번호) | Gate-1, Gate-2 등 |
 | `{{STAGE_STEP1}}` | {stage}.step1 | 1단계 작업 |
 | `{{STAGE_STEP2}}` | {stage}.step2 | 2단계 작업 |
 | `{{STAGE_STEP3}}` | {stage}.step3 | 3단계 작업 |

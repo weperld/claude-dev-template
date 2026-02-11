@@ -83,7 +83,7 @@ Claude Code와 함께 사용하는 개발 자동화 시스템입니다.
 ### 시스템 구성
 
 - **Gate 검증**: 각 파이프라인 단계의 통과 조건 + 크로스체크
-- **WIP 추적**: WorkID 기반 작업 관리 (WIP-YYYYMMDD-NN)
+- **WIP 추적**: WorkID 기반 작업 관리 (WIP-YYYYMMDD-NNN)
 - **에이전트 시스템**: 역할별 에이전트 (analyst, architect, developer, tester, reviewer 등)
 - **에러 핸들링**: 롤백 프로토콜, 충돌 방지
 - **자동 업데이트**: 상태 전이, 진행률 추적
@@ -96,7 +96,9 @@ Claude Code와 함께 사용하는 개발 자동화 시스템입니다.
 
 1. 이 저장소를 클론
 2. `template-config.json`을 프로젝트에 맞게 수정 (참고: `template-config.example.json`)
-3. `init.ps1` 실행 (Windows PowerShell)
+3. 초기화 스크립트 실행:
+   - Windows: `.\init.ps1` (PowerShell)
+   - Linux/macOS: `./init.sh` (Bash, jq 필요)
 4. 생성된 파일들을 프로젝트 루트로 복사
 5. `.guides/` 스켈레톤 파일 내용 작성
 
@@ -109,17 +111,19 @@ claude-dev-template/
 ├── SETUP_GUIDE.md                # 에이전트용 세팅 가이드
 ├── template-config.json          # 설정 파일 (빈 템플릿)
 ├── template-config.example.json  # 설정 예시 (ExcelBinder 기준)
-├── init.ps1                      # 초기화 스크립트 (PowerShell)
+├── init.ps1                      # 초기화 스크립트 (Windows PowerShell)
+├── init.sh                       # 초기화 스크립트 (Linux/macOS Bash)
+├── METHOD_B_REFERENCE.md          # 방법 B 수동 치환 참조 가이드
 ├── README.md                     # 이 파일
 │
-├── *.md.tmpl                     # 변수 치환 템플릿 (9개)
+├── *.md.tmpl                     # 변수 치환 템플릿 (11개)
 ├── *.md                          # 범용 파일 (그대로 복사)
 │
 ├── .claude/commands/             # 커스텀 명령어 14개
 ├── .guides/                      # 개발 가이드 + 스켈레톤
 ├── .wips/                        # WIP 메타 템플릿 + 설정
 ├── presets/                      # 파이프라인 프리셋 (lite/standard/full)
-└── WORKFLOW_PLANNING/            # 워크플로우 모듈 (5개)
+└── WORKFLOW_PLANNING/            # 워크플로우 모듈 (6개)
 ```
 
 ---
