@@ -129,6 +129,17 @@ claude-dev-template/
 
 ---
 
+## 알려진 제한사항
+
+| ID | 내용 | 비고 |
+|----|------|------|
+| L-1 | `COMMAND_COUNT` 변수가 고정값 `"14"`로 하드코딩되어 있음 | 커스텀 명령어 추가/삭제 시 `init.ps1`·`init.sh`의 해당 값을 수동 변경 필요 |
+| L-2 | lite/standard 프리셋의 Review 에이전트가 `reviewer`, full 프리셋만 `coordinator` | 의도적 설계: 소규모 프리셋은 reviewer로 충분, full은 coordinator가 종합 조율 |
+
+> 위 항목은 현재 동작에 영향을 주지 않는 선택적 개선 사항입니다.
+
+---
+
 ## 라이선스
 
 이 템플릿은 자유롭게 사용 가능합니다.
