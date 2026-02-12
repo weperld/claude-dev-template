@@ -71,6 +71,12 @@ if ($missingFields.Count -gt 0) {
 Write-Host "  프로젝트: $($config.project.name)" -ForegroundColor Green
 Write-Host "  기술 스택: $($config.project.techStack)" -ForegroundColor Green
 
+# 커스텀 명령어 수 동적 계산
+$commandFiles = Get-ChildItem -Path (Join-Path $ScriptDir ".claude\commands") -Filter "*.md" -File
+$tmplCommandFiles = Get-ChildItem -Path (Join-Path $ScriptDir ".claude\commands") -Filter "*.md.tmpl" -File
+$commandCount = $commandFiles.Count + $tmplCommandFiles.Count
+Write-Host "  커스텀 명령어: ${commandCount}개" -ForegroundColor Green
+
 # ─────────────────────────────────────────────
 # 2. 프리셋 및 스테이지 설정 로드
 # ─────────────────────────────────────────────
@@ -157,7 +163,7 @@ function Replace-TemplateVars {
     $Content = $Content.Replace('{{OUTPUT_FORMATS}}', $config.project.outputFormats)
     $Content = $Content.Replace('{{CLI_OPTIONS}}', $config.project.cliOptions)
     $Content = $Content.Replace('{{DOMAIN_RULES}}', $config.project.domainRules)
-    $Content = $Content.Replace('{{COMMAND_COUNT}}', "14")
+    $Content = $Content.Replace('{{COMMAND_COUNT}}', "$commandCount")
 
     # 언어별 규칙
     $Content = $Content.Replace('{{TYPE_SAFETY_RULES}}', $config.languageRules.typeSafety)

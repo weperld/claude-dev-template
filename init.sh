@@ -91,6 +91,10 @@ TECH_STACK=$(echo "$CONFIG" | jq -r '.project.techStack')
 echo -e "  ${GREEN}프로젝트: $PROJECT_NAME${NC}"
 echo -e "  ${GREEN}기술 스택: $TECH_STACK${NC}"
 
+# 커스텀 명령어 수 동적 계산
+COMMAND_COUNT=$(find "$SCRIPT_DIR/.claude/commands" -maxdepth 1 -name "*.md" -o -name "*.md.tmpl" | wc -l | tr -d ' ')
+echo -e "  ${GREEN}커스텀 명령어: ${COMMAND_COUNT}개${NC}"
+
 # ─────────────────────────────────────────────
 # 2. 프리셋 및 스테이지 설정 로드
 # ─────────────────────────────────────────────
@@ -188,7 +192,7 @@ replace_template_vars() {
     content="${content//\{\{OUTPUT_FORMATS\}\}/$(echo "$CONFIG" | jq -r '.project.outputFormats')}"
     content="${content//\{\{CLI_OPTIONS\}\}/$(echo "$CONFIG" | jq -r '.project.cliOptions')}"
     content="${content//\{\{DOMAIN_RULES\}\}/$(echo "$CONFIG" | jq -r '.project.domainRules')}"
-    content="${content//\{\{COMMAND_COUNT\}\}/14}"
+    content="${content//\{\{COMMAND_COUNT\}\}/$COMMAND_COUNT}"
 
     # 언어별 규칙
     local VALIDATION_ITEMS
@@ -229,7 +233,7 @@ replace_template_vars() {
     CODE_PATTERNS=$(echo "$CONFIG" | jq -r '.languageRules.codePatterns // ""')
     content="${content//\{\{CODE_PATTERNS\}\}/$CODE_PATTERNS}"
 
-    echo "$content"
+    printf '%s' "$content"
 }
 
 # ─────────────────────────────────────────────
