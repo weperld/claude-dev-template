@@ -1,8 +1,30 @@
 # 사용자별 설정 (example은 유지)
 template-config.json
 
-# init 스크립트 실행 시 생성되는 출력 디렉토리
+# init 스크립트 실행 시 생성되는 출력물
 output/
+AGENTS.md
+PROJECT_SUMMARY.md
+QUICK_REFERENCE.md
+WORK_IN_PROGRESS.md
+WORK_HISTORY.json
+WORKFLOW_PLANNING/GATES.md
+WORKFLOW_PLANNING/PIPELINE.md
+.claude/commands/릴리즈.md
+.claude/commands/명령어.md
+.guides/BUILD_GUIDE.md
+.guides/CODE_STYLE.md
+.guides/PLANNING_TEMPLATE.md
+.guides/TECHNICAL_RULES.md
+.guides/TEST_GUIDE.md
+.guides/WORKFLOW_GUIDE.md
+.wips/active/
+.wips/archive/
+.wips/templates/
+reports/
+
+# Windows 아티팩트
+nul
 
 # OS 파일
 Thumbs.db
