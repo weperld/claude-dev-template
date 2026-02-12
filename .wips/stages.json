@@ -13,6 +13,7 @@
       "사용자 승인 완료"
     ],
     "convergence": true,
+    "convergenceDescription": "분석 결과와 작업 계획의 완전성·견고성 수렴",
     "langRules": "{{VALIDATION_ITEMS}}",
     "step1": "- [ ] 지시 내용 확인\n- [ ] 관련 파일 목록 파악\n- [ ] 기존 코드/문서 분석\n- [ ] 유형 판단 (수정/신규)\n- [ ] 영향 범위 분석",
     "step2": "- [ ] 작업 계획 수립\n- [ ] 예상 변경 파일 정리\n- [ ] 위험 요소 식별\n- [ ] 사용자 확인 요청 준비",
@@ -37,6 +38,7 @@
       "수렴 완료: 필수 보완 사항 0건 (선택 보완 사항만 잔존)"
     ],
     "convergence": true,
+    "convergenceDescription": "아키텍처 설계의 기술적 완전성·견고성 수렴",
     "langRules": "{{VALIDATION_ITEMS}}",
     "step1": "- [ ] 계획 문서 확인\n- [ ] 기존 아키텍처 분석\n- [ ] 기술적 제약사항 파악",
     "step2": "- [ ] 아키텍처 설계\n- [ ] 인터페이스 정의\n- [ ] 기술적 검증",

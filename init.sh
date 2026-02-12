@@ -108,7 +108,10 @@ PRESET=$(cat "$PRESET_FILE")
 PRESET_DISPLAY_NAME=$(echo "$PRESET" | jq -r '.name')
 
 # 스테이지 배열 읽기
-mapfile -t STAGES < <(echo "$PRESET" | jq -r '.stages[]')
+STAGES=()
+while IFS= read -r stage; do
+    STAGES+=("$stage")
+done < <(echo "$PRESET" | jq -r '.stages[]')
 STAGE_COUNT=${#STAGES[@]}
 
 echo -e "  ${GREEN}프리셋: $PRESET_DISPLAY_NAME (${STAGE_COUNT}단계)${NC}"
@@ -167,6 +170,8 @@ replace_template_vars() {
     content="${content//\{\{WIP_FOLDER_TREE\}\}/$DYN_WIP_FOLDER_TREE}"
     content="${content//\{\{AGENT_STAGE_TABLE\}\}/$DYN_AGENT_STAGE_TABLE}"
     content="${content//\{\{PIPELINE_WORKFLOW_AUTO\}\}/$DYN_PIPELINE_WORKFLOW_AUTO}"
+    content="${content//\{\{CONVERGENCE_STAGES_TEXT\}\}/$DYN_CONVERGENCE_STAGES_TEXT}"
+    content="${content//\{\{CONVERGENCE_STAGES_LIST\}\}/$DYN_CONVERGENCE_STAGES_LIST}"
 
     # 프로젝트 정보
     content="${content//\{\{PROJECT_NAME\}\}/$(echo "$CONFIG" | jq -r '.project.name')}"
@@ -450,6 +455,38 @@ for ((i = 0; i < MERGED_COUNT; i++)); do
 $((i + 1)). ${MERGED_NAME[$i]}: ${MERGED_AGENT[$i]} (${MERGED_SUMMARY[$i]})"
 done
 
+# CONVERGENCE_STAGES_TEXT / CONVERGENCE_STAGES_LIST
+DYN_CONVERGENCE_STAGES_TEXT=""
+DYN_CONVERGENCE_STAGES_LIST=""
+CONV_KOREAN_NAMES=""
+CONV_DETAIL_LINES=""
+
+for ((i = 0; i < MERGED_COUNT; i++)); do
+    STAGE_NAME="${MERGED_NAME[$i]}"
+    HAS_CONVERGENCE=$(echo "$STAGES_CONFIG" | jq -r ".\"$STAGE_NAME\".convergence // false")
+
+    if [ "$HAS_CONVERGENCE" = "true" ]; then
+        CONV_DESC=$(echo "$STAGES_CONFIG" | jq -r ".\"$STAGE_NAME\".convergenceDescription // empty")
+        CONV_KOREAN="${MERGED_KOREAN[$i]}"
+
+        if [ -n "$CONV_KOREAN_NAMES" ]; then
+            CONV_KOREAN_NAMES="$CONV_KOREAN_NAMES/$CONV_KOREAN"
+        else
+            CONV_KOREAN_NAMES="$CONV_KOREAN"
+        fi
+
+        CONV_DETAIL_LINES="${CONV_DETAIL_LINES}
+- **${STAGE_NAME} (${CONV_KOREAN})**: ${CONV_DESC}"
+    fi
+done
+
+if [ -n "$CONV_KOREAN_NAMES" ]; then
+    DYN_CONVERGENCE_STAGES_TEXT="${CONV_KOREAN_NAMES} 단계"
+    DYN_CONVERGENCE_STAGES_LIST="수렴 검증은 다음 단계에 적용됩니다 (stages.json의 \`\"convergence\": true\`):${CONV_DETAIL_LINES}
+
+> 수렴 검증이 적용되지 않는 단계는 Gate 검증과 크로스체크로 품질을 보장합니다."
+fi
+
 echo -e "  ${GREEN}${MERGED_COUNT}개 스테이지 동적 컨텐츠 생성 완료${NC}"
 
 # ─────────────────────────────────────────────
@@ -484,6 +521,11 @@ mkdir -p "$WIPS_TEMPLATE_DIR"
 WIP_COUNT=0
 for ((i = 0; i < MERGED_COUNT; i++)); do
     STAGE="${MERGED_NAME[$i]}"
+
+    # Review(crosscheckAgent=null) 스테이지는 독립 WIP 불필요 (WIP_FOLDER_TREE와 일관성 유지)
+    if [ -z "${MERGED_CROSSCHECK[$i]}" ] || [ "${MERGED_CROSSCHECK[$i]}" = "null" ]; then
+        continue
+    fi
 
     WIP_CONTENT="$META_TEMPLATE"
     WIP_CONTENT="${WIP_CONTENT//\{\{STAGE\}\}/$STAGE}"
@@ -520,7 +562,12 @@ echo -e "  ${GREEN}$WIP_COUNT 개 WIP 템플릿 생성 완료${NC}"
 # ─────────────────────────────────────────────
 echo -e "\n${CYAN}[6/8] WIP 디렉토리 구조 생성...${NC}"
 
-for STAGE in "${STAGES[@]}"; do
+for ((i = 0; i < MERGED_COUNT; i++)); do
+    # Review(crosscheckAgent=null) 스테이지는 독립 WIP/active 불필요 (WIP_FOLDER_TREE와 일관성 유지)
+    if [ -z "${MERGED_CROSSCHECK[$i]}" ] || [ "${MERGED_CROSSCHECK[$i]}" = "null" ]; then
+        continue
+    fi
+    STAGE="${MERGED_NAME[$i]}"
     ACTIVE_DIR="$SCRIPT_DIR/.wips/active/$STAGE"
     if [ ! -d "$ACTIVE_DIR" ]; then
         mkdir -p "$ACTIVE_DIR"

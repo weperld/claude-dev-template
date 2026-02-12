@@ -127,80 +127,82 @@ function Replace-TemplateVars {
     # ── 동적 파이프라인 변수 (프리셋 기반, 먼저 치환) ──
     # 동적 변수 내부에 {{LANGUAGE_SPECIFIC_GATE_CHECKS}} 등이 포함될 수 있으므로
     # 동적 변수를 먼저 삽입한 후, 아래의 언어별 규칙 치환에서 나머지를 처리합니다.
-    $Content = $Content -replace '\{\{PIPELINE_ARROW\}\}', $dynamicVars.PipelineArrow
-    $Content = $Content -replace '\{\{GATED_PIPELINE_ARROW\}\}', $dynamicVars.GatedPipelineArrow
-    $Content = $Content -replace '\{\{STAGE_COUNT\}\}', $dynamicVars.StageCount
-    $Content = $Content -replace '\{\{PIPELINE_STAGES_LIST\}\}', $dynamicVars.PipelineStagesList
-    $Content = $Content -replace '\{\{WIP_COMPLETED_STEPS\}\}', $dynamicVars.WipCompletedSteps
-    $Content = $Content -replace '\{\{WIP_VALIDATION_GATES\}\}', $dynamicVars.WipValidationGates
-    $Content = $Content -replace '\{\{GATE_OVERVIEW_TABLE\}\}', $dynamicVars.GateOverviewTable
-    $Content = $Content -replace '\{\{GATE_DETAILS\}\}', $dynamicVars.GateDetails
-    $Content = $Content -replace '\{\{CROSS_STAGE_REVIEW_ROWS\}\}', $dynamicVars.CrossStageReviewRows
-    $Content = $Content -replace '\{\{WIP_FOLDER_TREE\}\}', $dynamicVars.WipFolderTree
-    $Content = $Content -replace '\{\{AGENT_STAGE_TABLE\}\}', $dynamicVars.AgentStageTable
-    $Content = $Content -replace '\{\{PIPELINE_WORKFLOW_AUTO\}\}', $dynamicVars.PipelineWorkflowAuto
+    $Content = $Content.Replace('{{PIPELINE_ARROW}}', $dynamicVars.PipelineArrow)
+    $Content = $Content.Replace('{{GATED_PIPELINE_ARROW}}', $dynamicVars.GatedPipelineArrow)
+    $Content = $Content.Replace('{{STAGE_COUNT}}', $dynamicVars.StageCount)
+    $Content = $Content.Replace('{{PIPELINE_STAGES_LIST}}', $dynamicVars.PipelineStagesList)
+    $Content = $Content.Replace('{{WIP_COMPLETED_STEPS}}', $dynamicVars.WipCompletedSteps)
+    $Content = $Content.Replace('{{WIP_VALIDATION_GATES}}', $dynamicVars.WipValidationGates)
+    $Content = $Content.Replace('{{GATE_OVERVIEW_TABLE}}', $dynamicVars.GateOverviewTable)
+    $Content = $Content.Replace('{{GATE_DETAILS}}', $dynamicVars.GateDetails)
+    $Content = $Content.Replace('{{CROSS_STAGE_REVIEW_ROWS}}', $dynamicVars.CrossStageReviewRows)
+    $Content = $Content.Replace('{{WIP_FOLDER_TREE}}', $dynamicVars.WipFolderTree)
+    $Content = $Content.Replace('{{AGENT_STAGE_TABLE}}', $dynamicVars.AgentStageTable)
+    $Content = $Content.Replace('{{PIPELINE_WORKFLOW_AUTO}}', $dynamicVars.PipelineWorkflowAuto)
+    $Content = $Content.Replace('{{CONVERGENCE_STAGES_TEXT}}', $dynamicVars.ConvergenceStagesText)
+    $Content = $Content.Replace('{{CONVERGENCE_STAGES_LIST}}', $dynamicVars.ConvergenceStagesList)
 
-    # 프로젝트 정보
-    $Content = $Content -replace '\{\{PROJECT_NAME\}\}', $config.project.name
-    $Content = $Content -replace '\{\{PROJECT_DESCRIPTION\}\}', $config.project.description
-    $Content = $Content -replace '\{\{TECH_STACK\}\}', $config.project.techStack
-    $Content = $Content -replace '\{\{LIBRARIES\}\}', $config.project.libraries
-    $Content = $Content -replace '\{\{BUILD_COMMAND\}\}', $config.project.buildCommand
-    $Content = $Content -replace '\{\{TEST_COMMAND\}\}', $config.project.testCommand
-    $Content = $Content -replace '\{\{RUN_COMMAND\}\}', $config.project.runCommand
-    $Content = $Content -replace '\{\{PROJECT_FILE\}\}', $config.project.projectFile
-    $Content = $Content -replace '\{\{PROJECT_STRUCTURE\}\}', $config.project.projectStructure
-    $Content = $Content -replace '\{\{NAMING_CONVENTIONS\}\}', $config.project.namingConventions
-    $Content = $Content -replace '\{\{FEATURE_CATEGORIES\}\}', $config.project.featureCategories
-    $Content = $Content -replace '\{\{OUTPUT_FORMATS\}\}', $config.project.outputFormats
-    $Content = $Content -replace '\{\{CLI_OPTIONS\}\}', $config.project.cliOptions
-    $Content = $Content -replace '\{\{DOMAIN_RULES\}\}', $config.project.domainRules
-    $Content = $Content -replace '\{\{COMMAND_COUNT\}\}', "14"
+    # 프로젝트 정보 (.Replace() 사용: config 값의 $ 문자가 정규식 역참조로 해석되는 것을 방지)
+    $Content = $Content.Replace('{{PROJECT_NAME}}', $config.project.name)
+    $Content = $Content.Replace('{{PROJECT_DESCRIPTION}}', $config.project.description)
+    $Content = $Content.Replace('{{TECH_STACK}}', $config.project.techStack)
+    $Content = $Content.Replace('{{LIBRARIES}}', $config.project.libraries)
+    $Content = $Content.Replace('{{BUILD_COMMAND}}', $config.project.buildCommand)
+    $Content = $Content.Replace('{{TEST_COMMAND}}', $config.project.testCommand)
+    $Content = $Content.Replace('{{RUN_COMMAND}}', $config.project.runCommand)
+    $Content = $Content.Replace('{{PROJECT_FILE}}', $config.project.projectFile)
+    $Content = $Content.Replace('{{PROJECT_STRUCTURE}}', $config.project.projectStructure)
+    $Content = $Content.Replace('{{NAMING_CONVENTIONS}}', $config.project.namingConventions)
+    $Content = $Content.Replace('{{FEATURE_CATEGORIES}}', $config.project.featureCategories)
+    $Content = $Content.Replace('{{OUTPUT_FORMATS}}', $config.project.outputFormats)
+    $Content = $Content.Replace('{{CLI_OPTIONS}}', $config.project.cliOptions)
+    $Content = $Content.Replace('{{DOMAIN_RULES}}', $config.project.domainRules)
+    $Content = $Content.Replace('{{COMMAND_COUNT}}', "14")
 
     # 언어별 규칙
-    $Content = $Content -replace '\{\{TYPE_SAFETY_RULES\}\}', $config.languageRules.typeSafety
-    $Content = $Content -replace '\{\{TYPE_SAFETY_ANTIPATTERNS\}\}', $config.languageRules.antiPatterns
-    $Content = $Content -replace '\{\{ARCHITECT_LANG_RULES\}\}', $config.languageRules.architectRules
-    $Content = $Content -replace '\{\{DEVELOPER_LANG_RULES\}\}', $config.languageRules.developerRules
-    $Content = $Content -replace '\{\{DESIGN_REVIEW_ITEMS\}\}', $config.languageRules.designReviewItems
+    $Content = $Content.Replace('{{TYPE_SAFETY_RULES}}', $config.languageRules.typeSafety)
+    $Content = $Content.Replace('{{TYPE_SAFETY_ANTIPATTERNS}}', $config.languageRules.antiPatterns)
+    $Content = $Content.Replace('{{ARCHITECT_LANG_RULES}}', $config.languageRules.architectRules)
+    $Content = $Content.Replace('{{DEVELOPER_LANG_RULES}}', $config.languageRules.developerRules)
+    $Content = $Content.Replace('{{DESIGN_REVIEW_ITEMS}}', $config.languageRules.designReviewItems)
 
     # 아래 3개 변수는 모두 동일한 값(languageRules.validationItems)을 참조하는 별칭입니다:
     #   - VALIDATION_ITEMS: AGENTS.md.tmpl에서 Self-Validation Checklist 용도
     #   - LANG_RULES: META-TEMPLATE.md에서 WIP 절대 규칙 체크 용도 (stages.json 경유)
     #   - LANGUAGE_SPECIFIC_GATE_CHECKS: GATES.md.tmpl에서 Gate 통과 조건 용도
-    $Content = $Content -replace '\{\{VALIDATION_ITEMS\}\}', $config.languageRules.validationItems
-    $Content = $Content -replace '\{\{LANG_RULES\}\}', $config.languageRules.validationItems
-    $Content = $Content -replace '\{\{LANGUAGE_SPECIFIC_GATE_CHECKS\}\}', $config.languageRules.validationItems
-    $Content = $Content -replace '\{\{PROJECT_FILE_STRUCTURE\}\}', $config.project.projectStructure
-    $Content = $Content -replace '\{\{PROJECT_EXAMPLES\}\}', $config.project.projectStructure
+    $Content = $Content.Replace('{{VALIDATION_ITEMS}}', $config.languageRules.validationItems)
+    $Content = $Content.Replace('{{LANG_RULES}}', $config.languageRules.validationItems)
+    $Content = $Content.Replace('{{LANGUAGE_SPECIFIC_GATE_CHECKS}}', $config.languageRules.validationItems)
+    $Content = $Content.Replace('{{PROJECT_FILE_STRUCTURE}}', $config.project.projectStructure)
+    $Content = $Content.Replace('{{PROJECT_EXAMPLES}}', $config.project.projectStructure)
 
     # 절대 규칙 요약
     $hardBlocksSummary = "- **타입 안전성**: $($config.languageRules.typeSafety)`n- **빈 catch 블록 금지**: catch(e) {} 사용 금지`n- **추측 금지**: 모호한 요청은 반드시 사용자에게 확인"
-    $Content = $Content -replace '\{\{ABSOLUTE_RULES_SUMMARY\}\}', $hardBlocksSummary
-    $Content = $Content -replace '\{\{HARD_BLOCKS_SUMMARY\}\}', $hardBlocksSummary
+    $Content = $Content.Replace('{{ABSOLUTE_RULES_SUMMARY}}', $hardBlocksSummary)
+    $Content = $Content.Replace('{{HARD_BLOCKS_SUMMARY}}', $hardBlocksSummary)
 
     # 에러 체크리스트 및 기술 원칙 (빈 값이면 기본값)
     if ($config.languageRules.PSObject.Properties['buildErrorChecklist']) {
-        $Content = $Content -replace '\{\{BUILD_ERROR_CHECKLIST\}\}', $config.languageRules.buildErrorChecklist
+        $Content = $Content.Replace('{{BUILD_ERROR_CHECKLIST}}', $config.languageRules.buildErrorChecklist)
     } else {
-        $Content = $Content -replace '\{\{BUILD_ERROR_CHECKLIST\}\}', ""
+        $Content = $Content.Replace('{{BUILD_ERROR_CHECKLIST}}', "")
     }
     if ($config.languageRules.PSObject.Properties['runtimeErrorChecklist']) {
-        $Content = $Content -replace '\{\{RUNTIME_ERROR_CHECKLIST\}\}', $config.languageRules.runtimeErrorChecklist
+        $Content = $Content.Replace('{{RUNTIME_ERROR_CHECKLIST}}', $config.languageRules.runtimeErrorChecklist)
     } else {
-        $Content = $Content -replace '\{\{RUNTIME_ERROR_CHECKLIST\}\}', ""
+        $Content = $Content.Replace('{{RUNTIME_ERROR_CHECKLIST}}', "")
     }
     if ($config.languageRules.PSObject.Properties['technicalPrinciples']) {
-        $Content = $Content -replace '\{\{TECHNICAL_PRINCIPLES\}\}', $config.languageRules.technicalPrinciples
+        $Content = $Content.Replace('{{TECHNICAL_PRINCIPLES}}', $config.languageRules.technicalPrinciples)
     } else {
-        $Content = $Content -replace '\{\{TECHNICAL_PRINCIPLES\}\}', ""
+        $Content = $Content.Replace('{{TECHNICAL_PRINCIPLES}}', "")
     }
 
     # 코드 패턴 (빈 값이면 기본값)
     if ($config.languageRules.PSObject.Properties['codePatterns']) {
-        $Content = $Content -replace '\{\{CODE_PATTERNS\}\}', $config.languageRules.codePatterns
+        $Content = $Content.Replace('{{CODE_PATTERNS}}', $config.languageRules.codePatterns)
     } else {
-        $Content = $Content -replace '\{\{CODE_PATTERNS\}\}', ""
+        $Content = $Content.Replace('{{CODE_PATTERNS}}', "")
     }
 
     return $Content
@@ -332,7 +334,7 @@ for ($i = 0; $i -lt $mergedStages.Count; $i++) {
     $gateDetailLines += "**$($ms.Gate) ($($ms.Name) → $nextStage)**"
     foreach ($check in $ms.GateChecks) {
         # gateChecks 내부의 템플릿 변수를 미리 해결
-        $resolvedCheck = $check -replace '\{\{LANGUAGE_SPECIFIC_GATE_CHECKS\}\}', $config.languageRules.validationItems
+        $resolvedCheck = $check.Replace('{{LANGUAGE_SPECIFIC_GATE_CHECKS}}', $config.languageRules.validationItems)
         $gateDetailLines += "- ✅ $resolvedCheck"
     }
     $gateDetailLines += "- ✅ $($ms.Agent) 1차 검증"
@@ -397,6 +399,36 @@ for ($i = 0; $i -lt $mergedStages.Count; $i++) {
 }
 $dynamicVars.PipelineWorkflowAuto = $wfAutoLines -join "`n"
 
+# ── CONVERGENCE_STAGES_TEXT / CONVERGENCE_STAGES_LIST: 수렴 검증 적용 단계 ──
+$convergenceStages = @()
+foreach ($ms in $mergedStages) {
+    $stageMetadata = $stagesConfig.($ms.Name)
+    if ($stageMetadata.convergence -eq $true) {
+        $convergenceStages += @{
+            Name = $ms.Name
+            KoreanName = $ms.KoreanName
+            Description = $stageMetadata.convergenceDescription
+        }
+    }
+}
+
+if ($convergenceStages.Count -gt 0) {
+    $convergenceKoreanNames = $convergenceStages | ForEach-Object { $_.KoreanName }
+    $dynamicVars.ConvergenceStagesText = ($convergenceKoreanNames -join "/") + " 단계"
+
+    $convListLines = @()
+    $convListLines += '수렴 검증은 다음 단계에 적용됩니다 (stages.json의 `"convergence": true`):'
+    foreach ($cs in $convergenceStages) {
+        $convListLines += "- **$($cs.Name) ($($cs.KoreanName))**: $($cs.Description)"
+    }
+    $convListLines += ""
+    $convListLines += "> 수렴 검증이 적용되지 않는 단계는 Gate 검증과 크로스체크로 품질을 보장합니다."
+    $dynamicVars.ConvergenceStagesList = $convListLines -join "`n"
+} else {
+    $dynamicVars.ConvergenceStagesText = ""
+    $dynamicVars.ConvergenceStagesList = ""
+}
+
 Write-Host "  $($mergedStages.Count)개 스테이지 동적 컨텐츠 생성 완료" -ForegroundColor Green
 
 # ─────────────────────────────────────────────
@@ -443,22 +475,27 @@ foreach ($stage in $stages) {
     # 병합 데이터에서 해당 스테이지 찾기 (프리셋 기반 gate 번호 사용)
     $merged = $mergedStages | Where-Object { $_.Name -eq $stage }
 
+    # Review(crosscheckAgent=null) 스테이지는 독립 WIP 불필요 (WIP_FOLDER_TREE와 일관성 유지)
+    if ([string]::IsNullOrEmpty($merged.CrosscheckAgent)) {
+        continue
+    }
+
     $wipContent = $metaTemplate
 
     # 스테이지별 변수 치환 (프리셋 데이터 우선)
-    $wipContent = $wipContent -replace '\{\{STAGE\}\}', $stage
-    $wipContent = $wipContent -replace '\{\{AGENT\}\}', $merged.Agent
-    $wipContent = $wipContent -replace '\{\{CROSSCHECK_AGENT\}\}', $merged.CrosscheckAgent
-    $wipContent = $wipContent -replace '\{\{GATE\}\}', $merged.Gate
+    $wipContent = $wipContent.Replace('{{STAGE}}', $stage)
+    $wipContent = $wipContent.Replace('{{AGENT}}', $merged.Agent)
+    $wipContent = $wipContent.Replace('{{CROSSCHECK_AGENT}}', $merged.CrosscheckAgent)
+    $wipContent = $wipContent.Replace('{{GATE}}', $merged.Gate)
 
     # 스테이지별 단계 내용
     $langRules = $stageConfig.langRules
     $langRules = Replace-TemplateVars $langRules
-    $wipContent = $wipContent -replace '\{\{LANG_RULES\}\}', $langRules
-    $wipContent = $wipContent -replace '\{\{STAGE_STEP1\}\}', $stageConfig.step1
-    $wipContent = $wipContent -replace '\{\{STAGE_STEP2\}\}', $stageConfig.step2
-    $wipContent = $wipContent -replace '\{\{STAGE_STEP3\}\}', $stageConfig.step3
-    $wipContent = $wipContent -replace '\{\{STAGE_RESULTS\}\}', $stageConfig.results
+    $wipContent = $wipContent.Replace('{{LANG_RULES}}', $langRules)
+    $wipContent = $wipContent.Replace('{{STAGE_STEP1}}', $stageConfig.step1)
+    $wipContent = $wipContent.Replace('{{STAGE_STEP2}}', $stageConfig.step2)
+    $wipContent = $wipContent.Replace('{{STAGE_STEP3}}', $stageConfig.step3)
+    $wipContent = $wipContent.Replace('{{STAGE_RESULTS}}', $stageConfig.results)
 
     $outputFile = Join-Path $wipsTemplateDir "WIP-$stage-YYYYMMDD-NNN.md"
     Set-Content -Path $outputFile -Value $wipContent -Encoding UTF8 -NoNewline
@@ -474,14 +511,17 @@ Write-Host "  $wipCount 개 WIP 템플릿 생성 완료" -ForegroundColor Green
 # ─────────────────────────────────────────────
 Write-Host "`n[6/8] WIP 디렉토리 구조 생성..." -ForegroundColor Cyan
 
-foreach ($stage in $stages) {
-    $activeDir = Join-Path $ScriptDir ".wips\active\$stage"
+foreach ($ms in $mergedStages) {
+    if ([string]::IsNullOrEmpty($ms.CrosscheckAgent)) {
+        continue
+    }
+    $activeDir = Join-Path $ScriptDir ".wips\active\$($ms.Name)"
     if (-not (Test-Path $activeDir)) {
         New-Item -ItemType Directory -Path $activeDir -Force | Out-Null
         # .gitkeep 생성
         New-Item -ItemType File -Path (Join-Path $activeDir ".gitkeep") -Force | Out-Null
     }
-    Write-Host "  생성: .wips/active/$stage/" -ForegroundColor Gray
+    Write-Host "  생성: .wips/active/$($ms.Name)/" -ForegroundColor Gray
 }
 
 # archive 디렉토리도 생성
