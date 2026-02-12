@@ -62,7 +62,7 @@ def generate_workid(work_in_progress_path: str) -> str:
 def main():
     """메인 함수"""
     # 현재 디렉토리에서 WORK_IN_PROGRESS.md 찾기
-    work_in_progress_path = Path(__file__).parent.parent / "WORK_IN_PROGRESS.md"
+    work_in_progress_path = Path(__file__).parent.parent.parent / "WORK_IN_PROGRESS.md"
 
     if not work_in_progress_path.exists():
         print(f"Error: WORK_IN_PROGRESS.md not found at {work_in_progress_path}")

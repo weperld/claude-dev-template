@@ -170,6 +170,9 @@ def create_workid():
 ## 📊 상태 전이 다이어그램
 
 ### 전체 상태 전이
+
+> **참고**: 아래 다이어그램은 full 프리셋(7단계: Plan → Design → Code → Test → Docs → QA → Review) 기준입니다. lite/standard 프리셋에서는 해당 프리셋의 단계만 포함됩니다.
+
 ```mermaid
 stateDiagram-v2
     [*] --> New: 새 작업 요청
@@ -323,10 +326,10 @@ reviewer (WORK_IN_PROGRESS.md 읽기: 재검증)
 ## WorkID 생성 로직
 
 1. 오늘 날짜 구하기: `YYYYMMDD`
-2. WORK_IN_PROGRESS.md에서 `WIP-YYYYMMDD-NNNN` 패턴 검색
+2. WORK_IN_PROGRESS.md에서 `WIP-YYYYMMDD-NNN` 패턴 검색
 3. 같은 날짜의 WorkID가 있으면 가장 높은 NN에 +1
 4. 같은 날짜의 WorkID가 없으면 001부터 시작
-5. 형식: `WIP-YYYYMMDD-NNNN` (3자리 숫자, 0 패딩)
+5. 형식: `WIP-YYYYMMDD-NNN` (3자리 숫자, 0 패딩)
 ```
 
 **Step 2: WORK_IN_PROGRESS.md "활성 작업"에 자동 추가**

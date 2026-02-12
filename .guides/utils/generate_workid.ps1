@@ -56,7 +56,7 @@ function Main {
     # 현재 디렉토리에서 WORK_IN_PROGRESS.md 찾기
     $scriptPath = $MyInvocation.MyCommand.Path
     $scriptDir = Split-Path $scriptPath -Parent
-    $projectDir = Split-Path $scriptDir -Parent
+    $projectDir = Split-Path (Split-Path $scriptDir -Parent) -Parent
     $workInProgressPath = Join-Path $projectDir "WORK_IN_PROGRESS.md"
 
     if (-not (Test-Path $workInProgressPath)) {
@@ -75,7 +75,7 @@ function Main {
 
     # WORK_IN_PROGRESS.md에 추가 (선택 사항)
     Write-Host "`n📌 다음 명령으로 WORK_IN_PROGRESS.md를 업데이트하세요:" -ForegroundColor Cyan
-    Write-Host "에이전트: 'WIP-$newWorkID 생성하고 WORK_IN_PROGRESS.md에 추가해줘'"
+    Write-Host "에이전트: '$newWorkID 생성하고 WORK_IN_PROGRESS.md에 추가해줘'"
 
     return 0
 }

@@ -409,9 +409,9 @@
 
 ### 작업 재개
 ```
-재개: WIP-YYYYMMDD-NNNN
+재개: WIP-YYYYMMDD-NNN
 또는
-CONTINUE: WIP-YYYYMMDD-NNNN
+CONTINUE: WIP-YYYYMMDD-NNN
 ```
 → WORK_IN_PROGRESS.md에서 상태 확인 → 재개
 
@@ -425,9 +425,9 @@ CONTINUE: WIP-20250202-001
 
 ### 작업 완료/취소
 ```
-완료: WIP-YYYYMMDD-NNNN
-취소: WIP-YYYYMMDD-NNNN [사유]
-상태: WIP-YYYYMMDD-NNNN 또는 상태: 전체
+완료: WIP-YYYYMMDD-NNN
+취소: WIP-YYYYMMDD-NNN [사유]
+상태: WIP-YYYYMMDD-NNN 또는 상태: 전체
 ```
 
 ---
@@ -516,7 +516,7 @@ CONTINUE: WIP-20250202-001
 
 ### WorkID 형식
 ```
-WIP-YYYYMMDD-NNNN
+WIP-YYYYMMDD-NNN
 예: WIP-20250202-001
 ```
 
@@ -639,9 +639,9 @@ WIP-YYYYMMDD-NNNN
 **템플릿 파일 형식**: `WIP-{Stage}-YYYYMMDD-NNN.md`
 - `{Stage}`: 스테이지 이름 (Plan, Design, Code, Test, Docs, QA)
 - `YYYYMMDD`: 날짜 플레이스홀더 (변경 불필요)
-- `NN`: 순번 플레이스홀더 (변경 불필요)
+- `NNN`: 순번 플레이스홀더 (3자리 0패딩, 변경 불필요)
 
-**독립 WIP 파일 형식**: `WIP-{Stage}-{YYYYMMDD}-{NN}.md`
+**독립 WIP 파일 형식**: `WIP-{Stage}-{YYYYMMDD}-{NNN}.md`
 - 예: `WIP-Plan-20250208-001.md`
 
 ---
@@ -652,7 +652,7 @@ WIP-YYYYMMDD-NNNN
 
 | 항목 | 템플릿 내용 | 변경 대상 | 예시 |
 |------|-----------|----------|------|
-| WorkID | `WIP-YYYYMMDD-NNNN` | 실제 WorkID | `WIP-20250208-001` |
+| WorkID | `WIP-YYYYMMDD-NNN` | 실제 WorkID | `WIP-20250208-001` |
 | 생성일 | `YYYY-MM-DD` | 실제 날짜 | `2025-02-08` |
 | 상태 | `준비 / 진행 중 / 완료 / 취소` | 작업 상태 | `진행 중` |
 
