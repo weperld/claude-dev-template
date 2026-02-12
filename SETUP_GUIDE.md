@@ -403,7 +403,7 @@ preset + stages.json 조합으로 init 스크립트가 자동 생성하는 변�
 
 | 변수 | 생성 로직 | 사용되는 파일 |
 |------|----------|--------------|
-| `{{COMMAND_COUNT}}` | 고정값 "14" | CLAUDE.md |
+| `{{COMMAND_COUNT}}` | `.claude/commands/` 내 `.md`+`.md.tmpl` 파일 수 (동적 계산) | CLAUDE.md |
 | `{{HARD_BLOCKS_SUMMARY}}` | typeSafety + 고정 규칙 조합 | (Reserve: ABSOLUTE_RULES_SUMMARY와 동일 값, 현재 .tmpl 미사용) |
 | `{{ABSOLUTE_RULES_SUMMARY}}` | HARD_BLOCKS_SUMMARY와 동일 | CLAUDE.md |
 | `{{PIPELINE_ARROW}}` | 스테이지명을 " → "로 연결 | CLAUDE.md, AGENTS.md |

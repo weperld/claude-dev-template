@@ -133,7 +133,7 @@ claude-dev-template/
 
 | ID | 내용 | 비고 |
 |----|------|------|
-| L-1 | `COMMAND_COUNT` 변수가 고정값 `"14"`로 하드코딩되어 있음 | 커스텀 명령어 추가/삭제 시 `init.ps1`·`init.sh`의 해당 값을 수동 변경 필요 |
+| L-1 | ~~해결됨~~ `COMMAND_COUNT`가 `.claude/commands/` 내 `.md`+`.md.tmpl` 파일 수를 동적 계산 | `init.ps1`·`init.sh` 모두 적용 완료 |
 | L-2 | lite/standard 프리셋의 Review 에이전트가 `reviewer`, full 프리셋만 `coordinator` | 의도적 설계: 소규모 프리셋은 reviewer로 충분, full은 coordinator가 종합 조율 |
 
 > 위 항목은 현재 동작에 영향을 주지 않는 선택적 개선 사항입니다.
