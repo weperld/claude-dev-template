@@ -65,7 +65,7 @@
 
 > 선택 필드가 config에 없으면 빈 문자열로 치환합니다.
 
-### B. 동적 파이프라인 변수 (~12개)
+### B. 동적 파이프라인 변수 (~14개)
 
 프리셋 + stages.json을 조합하여 생성해야 합니다. **섹션 3에서 각각의 알고리즘을 설명합니다.**
 
@@ -83,6 +83,8 @@
 | `{{WIP_FOLDER_TREE}}` | AGENTS.md |
 | `{{AGENT_STAGE_TABLE}}` | AGENTS.md |
 | `{{PIPELINE_WORKFLOW_AUTO}}` | PIPELINE.md |
+| `{{CONVERGENCE_STAGES_TEXT}}` | CLAUDE.md, GATES.md, PIPELINE.md |
+| `{{CONVERGENCE_STAGES_LIST}}` | GATES.md |
 
 ### C. 별칭 변수 (~4개)
 
@@ -578,6 +580,42 @@ COMMAND_COUNT = count(.claude/commands/*.md)
 
 현재 기본 값: **14**
 
+### 3-14. CONVERGENCE_STAGES_TEXT
+
+stages.json에서 `"convergence": true`인 스테이지를 현재 프리셋 기준으로 필터링하여 한글명을 연결합니다.
+
+```
+convergenceStages = mergedStages에서 stagesConfig[name].convergence == true인 것만 필터
+
+IF convergenceStages가 비어있지 않으면:
+    koreanNames = convergenceStages의 각 koreanName
+    CONVERGENCE_STAGES_TEXT = koreanNames를 "/"로 연결 + " 단계"
+    예: full → "계획/설계 단계", lite/standard → "계획 단계"
+ELSE:
+    CONVERGENCE_STAGES_TEXT = ""
+```
+
+### 3-15. CONVERGENCE_STAGES_LIST
+
+수렴 검증 적용 단계의 상세 목록을 생성합니다.
+
+```
+IF convergenceStages가 비어있지 않으면:
+    lines = []
+    lines += '수렴 검증은 다음 단계에 적용됩니다 (stages.json의 `"convergence": true`):'
+    FOR EACH cs IN convergenceStages:
+        lines += "- **{cs.Name} ({cs.KoreanName})**: {cs.convergenceDescription}"
+    lines += ""
+    lines += "> 수렴 검증이 적용되지 않는 단계는 Gate 검증과 크로스체크로 품질을 보장합니다."
+    CONVERGENCE_STAGES_LIST = lines를 줄바꿈으로 연결
+ELSE:
+    CONVERGENCE_STAGES_LIST = ""
+```
+
+> `convergenceDescription`은 stages.json에 정의된 필드입니다. 현재값:
+> - Plan: "분석 결과와 작업 계획의 완전성·견고성 수렴"
+> - Design: "아키텍처 설계의 기술적 완전성·견고성 수렴"
+
 ---
 
 ## 4. 검증 체크리스트
@@ -593,7 +631,7 @@ COMMAND_COUNT = count(.claude/commands/*.md)
 - [ ] 별칭 변수(C 카테고리)가 원본과 동일한 값으로 치환됨
 - [ ] 선택 필드(buildErrorChecklist 등)가 없으면 빈 문자열로 치환됨
 - [ ] `reports/` 디렉토리와 `.gitkeep` 파일 생성됨
-- [ ] `WORK_HISTORY.json` 초기 파일(`[]`) 생성됨
+- [ ] `WORK_HISTORY.json` 초기 파일(`{"completed_works":[],"cancelled_works":[]}`) 생성됨
 - [ ] `.wips/templates/` 하위 WIP 템플릿 파일들 생성됨
 - [ ] `.wips/active/{Stage}/` 디렉토리 구조 생성됨
 

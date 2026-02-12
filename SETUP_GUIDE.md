@@ -418,6 +418,8 @@ preset + stages.json 조합으로 init 스크립트가 자동 생성하는 변�
 | `{{CROSS_STAGE_REVIEW_ROWS}}` | 에이전트 크로스체크 테이블 행 | AGENTS.md |
 | `{{WIP_FOLDER_TREE}}` | .wips/ 디렉토리 트리 | AGENTS.md |
 | `{{AGENT_STAGE_TABLE}}` | 에이전트-스테이지 매핑 테이블 | AGENTS.md |
+| `{{CONVERGENCE_STAGES_TEXT}}` | convergence=true 스테이지의 한글명을 "/"로 연결 + " 단계" | CLAUDE.md, GATES.md, PIPELINE.md |
+| `{{CONVERGENCE_STAGES_LIST}}` | convergence=true 스테이지 목록 + 설명 (마크다운 리스트) | GATES.md |
 
 ### C. 별칭 변수 (다른 변수와 동일한 값)
 
