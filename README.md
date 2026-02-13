@@ -61,12 +61,13 @@ Claude Code와 함께 사용하는 개발 자동화 시스템입니다.
 | **standard** | Plan → Code → Test → Docs → Review | 일반 프로젝트 |
 | **full** | Plan → Design → Code → Test → Docs → QA → Review | 대규모/엄격한 프로젝트 |
 
-### 커스텀 명령어 (14개)
+### 커스텀 명령어
 
 | 명령어 | 용도 |
 |--------|------|
 | `/project:신규` | 새 기능 추가 (파이프라인 전체 실행) |
 | `/project:수정` | 버그 수정 또는 기능 개선 |
+| `/project:간편` | 파이프라인 생략, 최소 검증만 수행 |
 | `/project:긴급버그` | 긴급 핫픽스 |
 | `/project:상태` | 작업 상태 확인 |
 | `/project:완료` | WIP 작업 완료 처리 |
