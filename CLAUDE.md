@@ -42,6 +42,7 @@
 | `.guides/TEST_GUIDE.md` | 테스트 표준 |
 | `.guides/COMMIT_RULES.md` | Git 커밋 규칙 |
 | `.guides/PLANNING_TEMPLATE.md` | 기획 문서 템플릿 |
+| `.guides/VERIFICATION_ITEMS.md` | 검증 항목 체크리스트 |
 
 ---
 
@@ -53,6 +54,19 @@
 - **타입 안전성**: 타입 안전성 규칙을 입력하세요
 - **빈 catch 블록 금지**: catch(e) {} 사용 금지
 - **추측 금지**: 모호한 요청은 반드시 사용자에게 확인
+
+### 파이프라인 강제 규칙 (Hard Block)
+
+> **위반 시 조치**: 작업을 완료로 간주하지 않으며, 누락된 단계를 즉시 수행해야 한다.
+
+커스텀 명령어(`/project:신규`, `/project:수정`, `/project:간편`) 사용 여부와 관계없이, **모든 코드 변경 작업**은 반드시 다음을 수행해야 한다:
+
+1. **작업 시작 전** AGENTS.md 필독 순서를 따른다 (AGENTS.md → PROJECT_SUMMARY.md → WORKFLOW_PLANNING/INDEX.md → WORK_IN_PROGRESS.md)
+2. **Code 단계 완료 후** 반드시 빌드 검증을 수행한다 (빌드 에러 0건 확인)
+3. **작업 완료 전** `.guides/VERIFICATION_ITEMS.md`의 해당 체크리스트를 확인한다
+4. **작업 완료 전** Self-Validation Checklist를 수행하고 결과를 보고한다
+5. **위 항목을 수행하지 않은 작업은 완료로 간주하지 않는다**
+6. **문제 발생 시** 재발 가능성이 있는 문제는 `.guides/VERIFICATION_ITEMS.md`에 검증 항목을 추가한다
 
 ### 수렴 검증 프로토콜 (전역 적용)
 
@@ -72,12 +86,13 @@
 
 ## 커스텀 명령어
 
-`.claude/commands/` 디렉토리에 14개의 명령어가 정의되어 있습니다.
+`.claude/commands/` 디렉토리에 명령어가 정의되어 있습니다.
 `/project:명령어`로 전체 목록을 확인하세요.
 
 주요 명령어:
 - `/project:신규 [기능 설명]` - 새로운 기능 추가
 - `/project:수정 [문제 설명]` - 버그 수정 또는 기능 개선
+- `/project:간편 [작업 설명]` - 파이프라인 생략, 최소 검증만 수행
 - `/project:커밋` - 변경 사항 커밋 (메시지 자동 생성)
 - `/project:전송` - 스테이징 → 커밋 → 푸시 한번에
 - `/project:상태 전체` - 전체 작업 상태 확인
