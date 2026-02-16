@@ -14,7 +14,7 @@
 - **개발 파이프라인**: 프리셋별 3~7단계 (lite/standard/full)
 - **Gate 검증 시스템**: 각 단계 통과 조건 + 크로스체크
 - **WIP 추적**: WorkID 기반 작업 관리 (WIP-YYYYMMDD-NNN)
-- **14개 커스텀 명령어**: 신규, 수정, 긴급버그, 상태, 완료, 취소, 작업이어하기, 내보내기, 요약, 커밋, 전송, 푸시, 릴리즈, 명령어
+- **15개 커스텀 명령어**: 신규, 수정, 간편, 긴급버그, 상태, 완료, 취소, 작업이어하기, 내보내기, 요약, 커밋, 전송, 푸시, 릴리즈, 명령어
 - **에이전트 시스템**: 역할별 에이전트 (analyst, architect, developer, tester, doc-manager, reviewer, coordinator)
 - **에러 핸들링**: 롤백 프로토콜, 충돌 방지
 
@@ -218,7 +218,7 @@ rm -rf "_template_temp"
    - `.guides/COMMIT_RULES.md` → 프로젝트 루트
    - `.guides/utils/generate_workid.ps1` → 프로젝트 루트
    - `.guides/utils/generate_workid.py` → 프로젝트 루트
-   - `.claude/commands/` 12개 범용 명령어 → 프로젝트 루트
+   - `.claude/commands/` 13개 범용 명령어 → 프로젝트 루트
 
 2. **템플릿 파일 치환 후 생성** (`.tmpl` 파일의 `{{변수}}`를 치환):
    - `CLAUDE.md.tmpl` → `CLAUDE.md`
@@ -274,7 +274,7 @@ rm -rf "_template_temp"
 1. **파일 존재 확인**:
    - `CLAUDE.md` - 진입점 (프로젝트 루트)
    - `AGENTS.md` - 에이전트 규칙
-   - `.claude/commands/` - 14개 명령어 파일
+   - `.claude/commands/` - 15개 명령어 파일
    - `WORKFLOW_PLANNING/` - 6개 모듈
    - `.wips/` - 템플릿 + active 디렉토리
    - `.guides/` - 가이드 파일들
@@ -418,7 +418,7 @@ preset + stages.json 조합으로 init 스크립트가 자동 생성하는 변�
 | `{{CROSS_STAGE_REVIEW_ROWS}}` | 에이전트 크로스체크 테이블 행 | AGENTS.md |
 | `{{WIP_FOLDER_TREE}}` | .wips/ 디렉토리 트리 | AGENTS.md |
 | `{{AGENT_STAGE_TABLE}}` | 에이전트-스테이지 매핑 테이블 | AGENTS.md |
-| `{{CONVERGENCE_STAGES_TEXT}}` | convergence=true 스테이지의 한글명을 "/"로 연결 + " 단계" | CLAUDE.md, GATES.md, PIPELINE.md |
+| `{{CONVERGENCE_STAGES_TEXT}}` | convergence=true 스테이지의 한글명을 "/"로 연결 + " 단계" | GATES.md, PIPELINE.md |
 | `{{CONVERGENCE_STAGES_LIST}}` | convergence=true 스테이지 목록 + 설명 (마크다운 리스트) | GATES.md |
 
 ### C. 별칭 변수 (다른 변수와 동일한 값)

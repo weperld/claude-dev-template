@@ -121,7 +121,7 @@ claude-dev-template/
 ├── *.md.tmpl                     # 변수 치환 템플릿 (11개)
 ├── *.md                          # 범용 파일 (그대로 복사)
 │
-├── .claude/commands/             # 커스텀 명령어 14개
+├── .claude/commands/             # 커스텀 명령어 15개
 ├── .guides/                      # 개발 가이드 + 스켈레톤
 ├── .wips/                        # WIP 메타 템플릿 + 설정
 ├── presets/                      # 파이프라인 프리셋 (lite/standard/full)
