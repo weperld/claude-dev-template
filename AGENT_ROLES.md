@@ -468,39 +468,39 @@ UI 에이전트 (뷰):
 ### 2. 분석가
 - [ ] AGENTS.md
 - [ ] PROJECT_SUMMARY.md
-- [ ] PLANNING_TEMPLATE.md
+- [ ] .guides/PLANNING_TEMPLATE.md
 
 ### 3. 아키텍트
 - [ ] AGENTS.md
 - [ ] PROJECT_SUMMARY.md
-- [ ] TECHNICAL_RULES.md
+- [ ] .guides/TECHNICAL_RULES.md
 - [ ] WORKFLOW_PLANNING/INDEX.md
 
 ### 4. 개발자
 - [ ] AGENTS.md
 - [ ] PROJECT_SUMMARY.md
-- [ ] CODE_STYLE.md
-- [ ] TECHNICAL_RULES.md
+- [ ] .guides/CODE_STYLE.md
+- [ ] .guides/TECHNICAL_RULES.md
 - [ ] WORKFLOW_PLANNING/INDEX.md
 
 ### 5. 리뷰어
 - [ ] AGENTS.md
-- [ ] CODE_STYLE.md
-- [ ] TECHNICAL_RULES.md
-- [ ] WORKFLOW_GUIDE.md
+- [ ] .guides/CODE_STYLE.md
+- [ ] .guides/TECHNICAL_RULES.md
+- [ ] .guides/WORKFLOW_GUIDE.md
 
 ### 6. 문서 관리자
 - [ ] AGENTS.md
 - [ ] WORK_IN_PROGRESS.md
 - [ ] WORK_HISTORY.json
-- [ ] PLANNING_TEMPLATE.md
+- [ ] .guides/PLANNING_TEMPLATE.md
 - [ ] QUICK_REFERENCE.md
 
 ### 7. 테스터
 - [ ] AGENTS.md
 - [ ] PROJECT_SUMMARY.md
-- [ ] BUILD_GUIDE.md
-- [ ] CODE_STYLE.md
+- [ ] .guides/BUILD_GUIDE.md
+- [ ] .guides/CODE_STYLE.md
 
 ---
 
