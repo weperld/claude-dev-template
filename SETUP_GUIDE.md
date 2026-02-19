@@ -363,87 +363,18 @@ rm -rf "_template_temp"
 
 ---
 
-## 변수 치환 참조표
+## 변수 치환 참조
 
-### A. 사용자 설정 변수 (template-config.json → .tmpl)
+변수는 4개 카테고리로 분류됩니다. 전체 목록과 알고리즘은 [METHOD_B_REFERENCE.md](METHOD_B_REFERENCE.md)를 참조하세요.
 
-config에서 직접 대입되는 변수입니다. 필수(R) / 선택(O) 구분에 유의하세요.
+| 카테고리 | 개수 | 설명 | 비고 |
+|---------|------|------|------|
+| A. 단순 치환 | ~24개 | `template-config.json` 값을 그대로 대입 | 대부분 필수(R), 4개 선택(O) |
+| B. 동적 파이프라인 | ~14개 | 프리셋 + stages.json 조합으로 생성 | 방법 A: init 스크립트 자동, 방법 B: 에이전트 직접 생성 |
+| C. 별칭 | 4개 | 다른 변수와 동일한 값 | VALIDATION_ITEMS, PROJECT_STRUCTURE의 별칭 |
+| D. WIP 템플릿 | ~8개 | stages.json → META-TEMPLATE.md | 스테이지별 반복 생성 |
 
-| 변수 | config 경로 | 필수 | 사용되는 파일 |
-|------|------------|:----:|--------------|
-| `{{PROJECT_NAME}}` | project.name | R | CLAUDE.md, PROJECT_SUMMARY.md, AGENTS.md, 명령어.md 등 |
-| `{{PROJECT_DESCRIPTION}}` | project.description | R | CLAUDE.md |
-| `{{TECH_STACK}}` | project.techStack | R | CLAUDE.md, AGENTS.md |
-| `{{LIBRARIES}}` | project.libraries | R | CLAUDE.md |
-| `{{BUILD_COMMAND}}` | project.buildCommand | R | CLAUDE.md, QUICK_REFERENCE.md, 릴리즈.md |
-| `{{TEST_COMMAND}}` | project.testCommand | R | CLAUDE.md |
-| `{{RUN_COMMAND}}` | project.runCommand | R | CLAUDE.md, QUICK_REFERENCE.md |
-| `{{PROJECT_FILE}}` | project.projectFile | R | WORKFLOW_GUIDE.md |
-| `{{PROJECT_STRUCTURE}}` | project.projectStructure | R | CLAUDE.md, QUICK_REFERENCE.md |
-| `{{NAMING_CONVENTIONS}}` | project.namingConventions | R | CLAUDE.md, QUICK_REFERENCE.md |
-| `{{FEATURE_CATEGORIES}}` | project.featureCategories | R | CLAUDE.md, GATES.md |
-| `{{OUTPUT_FORMATS}}` | project.outputFormats | R | CLAUDE.md |
-| `{{CLI_OPTIONS}}` | project.cliOptions | R | CLAUDE.md, QUICK_REFERENCE.md |
-| `{{DOMAIN_RULES}}` | project.domainRules | R | CLAUDE.md |
-| `{{TYPE_SAFETY_RULES}}` | languageRules.typeSafety | R | AGENTS.md |
-| `{{TYPE_SAFETY_ANTIPATTERNS}}` | languageRules.antiPatterns | R | AGENTS.md |
-| `{{ARCHITECT_LANG_RULES}}` | languageRules.architectRules | R | AGENTS.md |
-| `{{DEVELOPER_LANG_RULES}}` | languageRules.developerRules | R | AGENTS.md |
-| `{{VALIDATION_ITEMS}}` | languageRules.validationItems | R | AGENTS.md, GATES.md, WIP |
-| `{{DESIGN_REVIEW_ITEMS}}` | languageRules.designReviewItems | R | (Reserve: 치환 등록됨, 현재 .tmpl 미사용) |
-| `{{BUILD_ERROR_CHECKLIST}}` | languageRules.buildErrorChecklist | O | QUICK_REFERENCE.md |
-| `{{RUNTIME_ERROR_CHECKLIST}}` | languageRules.runtimeErrorChecklist | O | QUICK_REFERENCE.md |
-| `{{TECHNICAL_PRINCIPLES}}` | languageRules.technicalPrinciples | O | QUICK_REFERENCE.md |
-| `{{CODE_PATTERNS}}` | languageRules.codePatterns | O | QUICK_REFERENCE.md |
-
-### B. 자동 생성 변수 (init 스크립트가 동적으로 생성)
-
-preset + stages.json 조합으로 init 스크립트가 자동 생성하는 변수입니다.
-방법 B 사용 시 에이전트가 직접 생성해야 합니다 ([METHOD_B_REFERENCE.md](METHOD_B_REFERENCE.md) 참고).
-
-| 변수 | 생성 로직 | 사용되는 파일 |
-|------|----------|--------------|
-| `{{COMMAND_COUNT}}` | `.claude/commands/` 내 `.md`+`.md.tmpl` 파일 수 (동적 계산) | CLAUDE.md |
-| `{{HARD_BLOCKS_SUMMARY}}` | typeSafety + 고정 규칙 조합 | (Reserve: ABSOLUTE_RULES_SUMMARY와 동일 값, 현재 .tmpl 미사용) |
-| `{{ABSOLUTE_RULES_SUMMARY}}` | HARD_BLOCKS_SUMMARY와 동일 | CLAUDE.md |
-| `{{PIPELINE_ARROW}}` | 스테이지명을 " → "로 연결 | CLAUDE.md, AGENTS.md |
-| `{{GATED_PIPELINE_ARROW}}` | 스테이지명과 Gate를 교차 배치 | GATES.md |
-| `{{STAGE_COUNT}}` | 프리셋 스테이지 수 | PIPELINE.md |
-| `{{PIPELINE_STAGES_LIST}}` | 번호+한글명+요약 목록 | PIPELINE.md |
-| `{{PIPELINE_WORKFLOW_AUTO}}` | 자동화 모드 워크플로우 | PIPELINE.md |
-| `{{WIP_COMPLETED_STEPS}}` | 체크박스 형태 완료 단계 목록 | WORK_IN_PROGRESS.md |
-| `{{WIP_VALIDATION_GATES}}` | Gate별 검증 섹션 | WORK_IN_PROGRESS.md |
-| `{{GATE_OVERVIEW_TABLE}}` | Gate 요약 테이블 (롤백 포함) | GATES.md |
-| `{{GATE_DETAILS}}` | Gate별 상세 체크리스트 | GATES.md |
-| `{{CROSS_STAGE_REVIEW_ROWS}}` | 에이전트 크로스체크 테이블 행 | AGENTS.md |
-| `{{WIP_FOLDER_TREE}}` | .wips/ 디렉토리 트리 | AGENTS.md |
-| `{{AGENT_STAGE_TABLE}}` | 에이전트-스테이지 매핑 테이블 | AGENTS.md |
-| `{{CONVERGENCE_STAGES_TEXT}}` | convergence=true 스테이지의 한글명을 "/"로 연결 + " 단계" | GATES.md, PIPELINE.md |
-| `{{CONVERGENCE_STAGES_LIST}}` | convergence=true 스테이지 목록 + 설명 (마크다운 리스트) | GATES.md |
-
-### C. 별칭 변수 (다른 변수와 동일한 값)
-
-| 변수 | 원본 | 설명 |
-|------|------|------|
-| `{{LANG_RULES}}` | = `{{VALIDATION_ITEMS}}` | WIP 템플릿 내 언어별 규칙 |
-| `{{LANGUAGE_SPECIFIC_GATE_CHECKS}}` | = `{{VALIDATION_ITEMS}}` | GATES.md 내 Gate 체크 항목 |
-| `{{PROJECT_FILE_STRUCTURE}}` | = `{{PROJECT_STRUCTURE}}` | GATES.md 내 프로젝트 구조 |
-| `{{PROJECT_EXAMPLES}}` | = `{{PROJECT_STRUCTURE}}` | PLANNING_TEMPLATE.md 내 프로젝트 예시 |
-
-### D. WIP 템플릿 변수 (stages.json → META-TEMPLATE.md)
-
-스테이지별로 반복 생성되는 WIP 템플릿 내부 변수입니다.
-
-| 변수 | stages.json 경로 | 설명 |
-|------|-----------------|------|
-| `{{STAGE}}` | (키 이름) | Plan, Design, Code 등 |
-| `{{AGENT}}` | {stage}.agent | 담당 에이전트 |
-| `{{CROSSCHECK_AGENT}}` | {stage}.crosscheckAgent | 크로스체크 에이전트 |
-| `{{GATE}}` | (프리셋 기반 위치 번호) | Gate-1, Gate-2 등 |
-| `{{STAGE_STEP1}}` | {stage}.step1 | 1단계 작업 |
-| `{{STAGE_STEP2}}` | {stage}.step2 | 2단계 작업 |
-| `{{STAGE_STEP3}}` | {stage}.step3 | 3단계 작업 |
-| `{{STAGE_RESULTS}}` | {stage}.results | 결과물 섹션 |
+> **선택 필드 (O)**: `buildErrorChecklist`, `runtimeErrorChecklist`, `technicalPrinciples`, `codePatterns` — config에 없으면 빈 문자열로 치환
 
 ---
 

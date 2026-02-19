@@ -46,7 +46,7 @@ Claude Code와 함께 사용하는 개발 자동화 시스템입니다.
 4. **정리**: 세팅 완료 후 임시 디렉토리 `_template_temp/` 삭제
 
 **참고 파일:**
-- `SETUP_GUIDE.md` - 전체 세팅 절차 및 변수 치환 참조표
+- `SETUP_GUIDE.md` - 전체 세팅 절차 및 변수 치환 참조
 - `template-config.example.json` - ExcelBinder 프로젝트 실제 설정 예시
 
 ---

@@ -88,8 +88,6 @@
 
 ### C. 별칭 변수 (~4개)
 
-다른 변수와 동일한 값을 사용합니다.
-
 | 별칭 | 원본 |
 |------|------|
 | `{{LANG_RULES}}` | `{{VALIDATION_ITEMS}}` (= `languageRules.validationItems`) |
@@ -100,7 +98,6 @@
 ### D. WIP 템플릿 변수 (~8개)
 
 스테이지별 WIP 템플릿(`.wips/templates/`)에서 사용됩니다.
-각 스테이지의 stages.json 데이터에서 추출합니다.
 
 | 변수명 | stages.json 경로 | 설명 |
 |--------|-----------------|------|
@@ -127,7 +124,6 @@
 ### 사전 준비: 병합 데이터 생성
 
 모든 동적 변수는 **mergedStages** 배열을 기반으로 생성됩니다.
-먼저 이 배열을 만드세요.
 
 **입력**: 프리셋의 `stages[]` + `agents{}`, stages.json의 메타데이터
 
@@ -184,12 +180,7 @@ FUNCTION Resolve-RollbackTarget(target, availableStages, currentIndex):
 PIPELINE_ARROW = stages.join(" → ")
 ```
 
-**standard 프리셋 예시 출력:**
-```
-Plan → Code → Test → Docs → Review
-```
-
----
+> 출력 형식: `Plan → Code → Test → Docs → Review`
 
 ### 3-2. GATED_PIPELINE_ARROW
 
@@ -205,22 +196,13 @@ parts.push("완료")
 GATED_PIPELINE_ARROW = parts.join(" → ")
 ```
 
-**standard 프리셋 예시 출력:**
-```
-Plan → [Gate-1] → Code → [Gate-2] → Test → [Gate-3] → Docs → [Gate-4] → Review → [Gate-5] → 완료
-```
-
----
+> 출력 형식: `Plan → [Gate-1] → Code → [Gate-2] → ... → 완료`
 
 ### 3-3. STAGE_COUNT
 
 ```
 STAGE_COUNT = stages.length (문자열)
 ```
-
-**standard 프리셋 예시 출력:** `5`
-
----
 
 ### 3-4. PIPELINE_STAGES_LIST
 
@@ -235,20 +217,11 @@ FOR i = 0 TO mergedStages.length - 1:
 PIPELINE_STAGES_LIST = lines.join("\n")
 ```
 
-**standard 프리셋 예시 출력:**
-```
-1. Plan (계획): 기획서 분석, 유형 판단, 계획 수립
-2. Code (코딩): 코드 구현, 빌드 확인
-3. Test (테스트): 단위 테스트 자동 생성, 기능 테스트, 빌드 테스트
-4. Docs (문서화): 각 단계별 문서 업데이트, API 문서 생성
-5. Review (최종검토): 전체 결과물 종합 검토, 최종 승인
-```
-
----
+> 출력 형식: `1. Plan (계획): 기획서 분석, 유형 판단, 계획 수립` (각 스테이지 1행)
 
 ### 3-5. WIP_COMPLETED_STEPS
 
-WORK_IN_PROGRESS.md용 체크리스트입니다.
+PIPELINE_STAGES_LIST와 동일 로직, 각 행 앞에 `- [ ] ` prefix를 추가합니다.
 
 ```
 lines = []
@@ -258,17 +231,6 @@ FOR i = 0 TO mergedStages.length - 1:
 
 WIP_COMPLETED_STEPS = lines.join("\n")
 ```
-
-**standard 프리셋 예시 출력:**
-```
-- [ ] 1. Plan (계획): 기획서 분석, 유형 판단, 계획 수립
-- [ ] 2. Code (코딩): 코드 구현, 빌드 확인
-- [ ] 3. Test (테스트): 단위 테스트 자동 생성, 기능 테스트, 빌드 테스트
-- [ ] 4. Docs (문서화): 각 단계별 문서 업데이트, API 문서 생성
-- [ ] 5. Review (최종검토): 전체 결과물 종합 검토, 최종 승인
-```
-
----
 
 ### 3-6. WIP_VALIDATION_GATES
 
@@ -297,40 +259,14 @@ FOR i = 0 TO mergedStages.length - 1:
 WIP_VALIDATION_GATES = lines.join("\n")
 ```
 
-**standard 프리셋 예시 출력:**
+**예시 출력 (Gate 1개분):**
 ```
 - [ ] **Gate-1**: Plan → Code
   - [ ] 1차 자체 검증 (analyst)
   - [ ] 2차 자체 검증 (analyst)
   - [ ] 크로스체크 (architect)
   - 상태: 대기 중
-
-- [ ] **Gate-2**: Code → Test
-  - [ ] 1차 자체 검증 (developer)
-  - [ ] 2차 자체 검증 (developer)
-  - [ ] 크로스체크 (tester)
-  - 상태: 대기 중
-
-- [ ] **Gate-3**: Test → Docs
-  - [ ] 1차 자체 검증 (tester)
-  - [ ] 2차 자체 검증 (tester)
-  - [ ] 크로스체크 (developer)
-  - 상태: 대기 중
-
-- [ ] **Gate-4**: Docs → Review
-  - [ ] 1차 자체 검증 (doc-manager)
-  - [ ] 2차 자체 검증 (doc-manager)
-  - [ ] 크로스체크 (reviewer)
-  - 상태: 대기 중
-
-- [ ] **Gate-5**: Review → 완료
-  - [ ] 1차 자체 검증 (reviewer)
-  - [ ] 2차 자체 검증 (reviewer)
-  - [ ] 사용자 승인
-  - 상태: 대기 중
 ```
-
----
 
 ### 3-7. GATE_OVERVIEW_TABLE
 
@@ -361,20 +297,7 @@ FOR i = 0 TO mergedStages.length - 1:
 GATE_OVERVIEW_TABLE = lines.join("\n")
 ```
 
-**standard 프리셋 예시 출력:**
-```
-| Gate-1 | Plan → Code | analyst 2회 | architect 1회 | Plan 재계획 |
-| Gate-2 | Code → Test | developer 2회 | tester 1회 | Plan 재계획 |
-| Gate-3 | Test → Docs | tester 2회 | developer 1회 | Code 재코딩 |
-| Gate-4 | Docs → Review | doc-manager 2회 | reviewer 1회 | Test 재테스트 |
-| Gate-5 | Review → 완료 | reviewer 2회 | - | 적절 단계로 롤백 |
-```
-
-> **참고**: stages.json에서 Code의 rollbackTo는 "Design"이지만, standard 프리셋에는
-> "Design" 단계가 없으므로 `Resolve-RollbackTarget` 알고리즘이 이전 단계("Plan")로 폴백합니다.
-> full 프리셋에서는 "Design 재설계"로 정상 표시됩니다.
-
----
+> 출력 형식: `| Gate-1 | Plan → Code | analyst 2회 | architect 1회 | Plan 재계획 |` (각 Gate 1행)
 
 ### 3-8. GATE_DETAILS
 
@@ -389,7 +312,6 @@ FOR i = 0 TO mergedStages.length - 1:
     lines.push("**{ms.Gate} ({ms.Name} → {nextStage})**")
 
     FOR EACH check IN ms.GateChecks:
-        # 중첩 변수 해결: {{LANGUAGE_SPECIFIC_GATE_CHECKS}} → validationItems 값
         resolvedCheck = check.replace("{{LANGUAGE_SPECIFIC_GATE_CHECKS}}", config.languageRules.validationItems)
         lines.push("- ✅ {resolvedCheck}")
 
@@ -407,34 +329,6 @@ FOR i = 0 TO mergedStages.length - 1:
 GATE_DETAILS = lines.join("\n")
 ```
 
-**standard 프리셋 예시 출력** (validationItems = "- [ ] 검증 항목 1\n- [ ] 검증 항목 2"):
-```
-**Gate-1 (Plan → Code)**
-- ✅ 계획 명확성 검증
-- ✅ 영향 파일 완전성 검증
-- ✅ 위험 요소 식별 완료
-- ✅ 사용자 승인 완료
-- ✅ analyst 1차 검증
-- ✅ analyst 2차 검증
-- ✅ architect 크로스체크
-
-**Gate-2 (Code → Test)**
-- ✅ 빌드 성공 (Exit Code 0)
-- ✅ 컴파일 에러 0개
-- ✅ 컴파일 경고 < 5개 (심각 경고 0개)
-- ✅ 참조 에러 0개
-- ✅ 코드 스타일 준수
-- ✅ 기술 규칙 준수 - [ ] 검증 항목 1
-- [ ] 검증 항목 2
-- ✅ developer 1차 검증
-- ✅ developer 2차 검증
-- ✅ tester 크로스체크
-
-...이하 동일 패턴 반복
-```
-
----
-
 ### 3-9. CROSS_STAGE_REVIEW_ROWS
 
 AGENTS.md용 크로스체크 검증 테이블 행입니다. **마지막 스테이지(Review)는 제외**합니다.
@@ -450,16 +344,6 @@ FOR i = 0 TO mergedStages.length - 2:  # 마지막 제외
 
 CROSS_STAGE_REVIEW_ROWS = lines.join("\n")
 ```
-
-**standard 프리셋 예시 출력:**
-```
-| Plan → Code | architect | Gate-1 크로스체크 검증 |
-| Code → Test | tester | Gate-2 크로스체크 검증 |
-| Test → Docs | developer | Gate-3 크로스체크 검증 |
-| Docs → Review | reviewer | Gate-4 크로스체크 검증 |
-```
-
----
 
 ### 3-10. WIP_FOLDER_TREE
 
@@ -487,23 +371,6 @@ FOR i = 0 TO nonReviewStages.length - 1:
 WIP_FOLDER_TREE = lines.join("\n")
 ```
 
-**standard 프리셋 예시 출력:**
-```
-.wips/
-├── templates/           # 템플릿 파일 (읽기 전용)
-│   ├── WIP-Plan-YYYYMMDD-NNN.md
-│   ├── WIP-Code-YYYYMMDD-NNN.md
-│   ├── WIP-Test-YYYYMMDD-NNN.md
-│   └── WIP-Docs-YYYYMMDD-NNN.md
-└── active/              # 독립 WIP 작성 폴더 (쓰기 전용)
-    ├── Plan/
-    ├── Code/
-    ├── Test/
-    └── Docs/
-```
-
----
-
 ### 3-11. AGENT_STAGE_TABLE
 
 AGENTS.md용 에이전트-스테이지 매핑 테이블 행입니다.
@@ -522,17 +389,6 @@ lines.push("| **{lastStage.Agent}** | {lastStage.Name} | (전체 관리) | (해�
 AGENT_STAGE_TABLE = lines.join("\n")
 ```
 
-**standard 프리셋 예시 출력:**
-```
-| **analyst** | Plan | `WIP-Plan-YYYYMMDD-NNN.md` | `.wips/active/Plan/` | `.wips/templates/WIP-Plan-YYYYMMDD-NNN.md` | `.wips/active/Plan/WIP-Plan-YYYYMMDD-NNN.md` |
-| **developer** | Code | `WIP-Code-YYYYMMDD-NNN.md` | `.wips/active/Code/` | `.wips/templates/WIP-Code-YYYYMMDD-NNN.md` | `.wips/active/Code/WIP-Code-YYYYMMDD-NNN.md` |
-| **tester** | Test | `WIP-Test-YYYYMMDD-NNN.md` | `.wips/active/Test/` | `.wips/templates/WIP-Test-YYYYMMDD-NNN.md` | `.wips/active/Test/WIP-Test-YYYYMMDD-NNN.md` |
-| **doc-manager** | Docs | `WIP-Docs-YYYYMMDD-NNN.md` | `.wips/active/Docs/` | `.wips/templates/WIP-Docs-YYYYMMDD-NNN.md` | `.wips/active/Docs/WIP-Docs-YYYYMMDD-NNN.md` |
-| **reviewer** | Review | (전체 관리) | (해당 없음) | - | - |
-```
-
----
-
 ### 3-12. PIPELINE_WORKFLOW_AUTO
 
 PIPELINE.md용 자동화 모드 워크플로우입니다.
@@ -550,25 +406,6 @@ FOR i = 0 TO mergedStages.length - 1:
 
 PIPELINE_WORKFLOW_AUTO = lines.join("\n")
 ```
-
-**standard 프리셋 예시 출력:**
-```
-사용자: "coordinator [기능명] 기능 추가"
-  ↓
-coordinator: 작업 시작 → WorkID 생성
-  ↓
-1. Plan: analyst (기획서 분석, 유형 판단, 계획 수립)
-  ↓
-2. Code: developer (코드 구현, 빌드 확인)
-  ↓
-3. Test: tester (단위 테스트 자동 생성, 기능 테스트, 빌드 테스트)
-  ↓
-4. Docs: doc-manager (각 단계별 문서 업데이트, API 문서 생성)
-  ↓
-5. Review: reviewer (전체 결과물 종합 검토, 최종 승인)
-```
-
----
 
 ### 3-13. COMMAND_COUNT
 
