@@ -645,6 +645,31 @@ if [ ! -f "$HISTORY_FILE" ]; then
     echo -e "  ${GRAY}생성: WORK_HISTORY.json${NC}"
 fi
 
+# WORK_HISTORY.md 초기 파일
+HISTORY_MD_FILE="$SCRIPT_DIR/WORK_HISTORY.md"
+if [ ! -f "$HISTORY_MD_FILE" ]; then
+    cat > "$HISTORY_MD_FILE" << 'HISTMD'
+# 작업 히스토리
+
+> 완료 및 취소된 작업의 기록입니다.
+
+---
+
+## 완료 작업
+
+| WorkID | 완료일 | 유형 | 제목 | 소요시간 |
+|--------|--------|------|------|----------|
+| *(없음)* | - | - | - | - |
+
+## 취소된 작업
+
+| WorkID | 취소일 | 유형 | 제목 | 사유 |
+|--------|--------|------|------|------|
+| *(없음)* | - | - | - | - |
+HISTMD
+    echo -e "  ${GRAY}생성: WORK_HISTORY.md${NC}"
+fi
+
 echo -e "  ${GREEN}디렉토리 구조 생성 완료${NC}"
 
 # ─────────────────────────────────────────────

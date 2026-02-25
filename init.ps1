@@ -602,6 +602,32 @@ if (-not (Test-Path $historyFile)) {
     Write-Host "  생성: WORK_HISTORY.json" -ForegroundColor Gray
 }
 
+# WORK_HISTORY.md 초기 파일 생성
+$historyMdFile = Join-Path $ScriptDir "WORK_HISTORY.md"
+if (-not (Test-Path $historyMdFile)) {
+    $initialHistoryMd = @'
+# 작업 히스토리
+
+> 완료 및 취소된 작업의 기록입니다.
+
+---
+
+## 완료 작업
+
+| WorkID | 완료일 | 유형 | 제목 | 소요시간 |
+|--------|--------|------|------|----------|
+| *(없음)* | - | - | - | - |
+
+## 취소된 작업
+
+| WorkID | 취소일 | 유형 | 제목 | 사유 |
+|--------|--------|------|------|------|
+| *(없음)* | - | - | - | - |
+'@
+    Set-Content -Path $historyMdFile -Value $initialHistoryMd -Encoding UTF8 -NoNewline
+    Write-Host "  생성: WORK_HISTORY.md" -ForegroundColor Gray
+}
+
 Write-Host "  디렉토리 구조 생성 완료" -ForegroundColor Green
 
 # ─────────────────────────────────────────────
