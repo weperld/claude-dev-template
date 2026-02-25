@@ -30,7 +30,7 @@ fi
 # ─────────────────────────────────────────────
 # 1. 설정 파일 읽기
 # ─────────────────────────────────────────────
-echo -e "\n${CYAN}[1/8] 설정 파일 읽기...${NC}"
+echo -e "\n${CYAN}[1/9] 설정 파일 읽기...${NC}"
 
 CONFIG_FILE="$SCRIPT_DIR/$CONFIG_PATH"
 if [ ! -f "$CONFIG_FILE" ]; then
@@ -96,9 +96,49 @@ COMMAND_COUNT=$(find "$SCRIPT_DIR/.claude/commands" -maxdepth 1 -name "*.md" -o 
 echo -e "  ${GREEN}커스텀 명령어: ${COMMAND_COUNT}개${NC}"
 
 # ─────────────────────────────────────────────
-# 2. 프리셋 및 스테이지 설정 로드
+# 2. 플러그인 감지 및 에이전트 모드 결정
 # ─────────────────────────────────────────────
-echo -e "\n${CYAN}[2/8] 파이프라인 프리셋 로드...${NC}"
+echo -e "\n${CYAN}[2/9] 에이전트 모드 결정...${NC}"
+
+# agentMode 읽기 (기본값: auto)
+AGENT_MODE=$(echo "$CONFIG" | jq -r '.agentMode // "auto"')
+
+# 플러그인 감지
+DETECTED_PLUGINS=""
+GLOBAL_CLAUDE_MD="$HOME/.claude/CLAUDE.md"
+if [ -f "$GLOBAL_CLAUDE_MD" ]; then
+    if grep -q '<!-- OMC:START -->' "$GLOBAL_CLAUDE_MD" 2>/dev/null; then
+        DETECTED_PLUGINS="oh-my-claudecode"
+    fi
+fi
+
+if [ "$AGENT_MODE" = "auto" ]; then
+    if [ -n "$DETECTED_PLUGINS" ]; then
+        echo -e "  ${YELLOW}감지된 플러그인: $DETECTED_PLUGINS${NC}"
+        echo ""
+        echo -e "  ${WHITE}에이전트 모드를 선택하세요:${NC}"
+        echo -e "  ${WHITE}  [1] 템플릿 에이전트 (기본) - 템플릿의 7개 역할 사용${NC}"
+        echo -e "  ${WHITE}  [2] 플러그인 위임 - 파이프라인만 유지, 에이전트는 플러그인에 위임${NC}"
+        echo -e "  ${WHITE}  [3] 하이브리드 - 파이프라인 + 플러그인 에이전트 매핑${NC}"
+        echo ""
+        read -rp "  선택 (1/2/3, 기본: 1): " AGENT_CHOICE
+        case "$AGENT_CHOICE" in
+            2) AGENT_MODE="plugin" ;;
+            3) AGENT_MODE="hybrid" ;;
+            *) AGENT_MODE="template" ;;
+        esac
+    else
+        AGENT_MODE="template"
+        echo -e "  ${GREEN}외부 플러그인 미감지 - 템플릿 에이전트 모드 사용${NC}"
+    fi
+fi
+
+echo -e "  ${GREEN}에이전트 모드: $AGENT_MODE${NC}"
+
+# ─────────────────────────────────────────────
+# 3. 프리셋 및 스테이지 설정 로드
+# ─────────────────────────────────────────────
+echo -e "\n${CYAN}[3/9] 파이프라인 프리셋 로드...${NC}"
 
 PRESET_NAME=$(echo "$CONFIG" | jq -r '.pipeline.preset')
 PRESET_FILE="$SCRIPT_DIR/presets/$PRESET_NAME.json"
@@ -239,7 +279,7 @@ replace_template_vars() {
 # ─────────────────────────────────────────────
 # 3. 동적 파이프라인 컨텐츠 생성
 # ─────────────────────────────────────────────
-echo -e "\n${CYAN}[3/8] 동적 파이프라인 컨텐츠 생성...${NC}"
+echo -e "\n${CYAN}[4/9] 동적 파이프라인 컨텐츠 생성...${NC}"
 
 # 병합 데이터 배열 (각 스테이지별)
 declare -a MERGED_NAME MERGED_AGENT MERGED_CROSSCHECK MERGED_GATE
@@ -496,7 +536,7 @@ echo -e "  ${GREEN}${MERGED_COUNT}개 스테이지 동적 컨텐츠 생성 완�
 # ─────────────────────────────────────────────
 # 4. .tmpl 파일 처리
 # ─────────────────────────────────────────────
-echo -e "\n${CYAN}[4/8] 템플릿 파일 처리...${NC}"
+echo -e "\n${CYAN}[5/9] 템플릿 파일 처리...${NC}"
 
 PROCESSED_COUNT=0
 while IFS= read -r -d '' TMPL_FILE; do
@@ -515,7 +555,7 @@ echo -e "  ${GREEN}$PROCESSED_COUNT 개 템플릿 처리 완료${NC}"
 # ─────────────────────────────────────────────
 # 5. WIP 템플릿 생성 (메타 템플릿 + 병합 데이터)
 # ─────────────────────────────────────────────
-echo -e "\n${CYAN}[5/8] WIP 템플릿 생성...${NC}"
+echo -e "\n${CYAN}[6/9] WIP 템플릿 생성...${NC}"
 
 META_TEMPLATE=$(cat "$SCRIPT_DIR/.wips/META-TEMPLATE.md")
 
@@ -564,7 +604,7 @@ echo -e "  ${GREEN}$WIP_COUNT 개 WIP 템플릿 생성 완료${NC}"
 # ─────────────────────────────────────────────
 # 6. .wips/active/ 디렉토리 생성
 # ─────────────────────────────────────────────
-echo -e "\n${CYAN}[6/8] WIP 디렉토리 구조 생성...${NC}"
+echo -e "\n${CYAN}[7/9] WIP 디렉토리 구조 생성...${NC}"
 
 for ((i = 0; i < MERGED_COUNT; i++)); do
     # Review(crosscheckAgent=null) 스테이지는 독립 WIP/active 불필요 (WIP_FOLDER_TREE와 일관성 유지)
@@ -610,7 +650,7 @@ echo -e "  ${GREEN}디렉토리 구조 생성 완료${NC}"
 # ─────────────────────────────────────────────
 # 7. .example.md → .md 복사
 # ─────────────────────────────────────────────
-echo -e "\n${CYAN}[7/8] 가이드 스켈레톤 복사...${NC}"
+echo -e "\n${CYAN}[8/9] 가이드 스켈레톤 복사...${NC}"
 
 GUIDES_DIR="$SCRIPT_DIR/.guides"
 if [ -d "$GUIDES_DIR" ]; then
@@ -633,12 +673,16 @@ echo -e "  ${GREEN}가이드 스켈레톤 복사 완료${NC}"
 # ─────────────────────────────────────────────
 # 8. 완료 요약
 # ─────────────────────────────────────────────
-echo -e "\n${CYAN}[8/8] 초기화 완료!${NC}"
+echo -e "\n${CYAN}[9/9] 초기화 완료!${NC}"
 echo ""
 echo -e "  ${WHITE}============================================${NC}"
 echo -e "  ${WHITE}프로젝트: $PROJECT_NAME${NC}"
 echo -e "  ${WHITE}파이프라인: $PRESET_DISPLAY_NAME (${STAGE_COUNT}단계)${NC}"
 echo -e "  ${WHITE}파이프라인: $DYN_PIPELINE_ARROW${NC}"
+echo -e "  ${WHITE}에이전트 모드: $AGENT_MODE${NC}"
+if [ -n "$DETECTED_PLUGINS" ]; then
+    echo -e "  ${WHITE}감지된 플러그인: $DETECTED_PLUGINS${NC}"
+fi
 echo -e "  ${WHITE}============================================${NC}"
 echo ""
 

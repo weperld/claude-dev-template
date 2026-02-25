@@ -16,6 +16,7 @@
     "cliOptions": "dotnet run --project ExcelBinder/ -- --feature [FeatureID] [옵션]\n# 옵션: --export, --codegen, --both, --all",
     "domainRules": "### 엑셀 필터링 규칙\n- **열 필터링 접두어**: `#` (해당 열 무시)\n- **행 필터링 접두어**: `#` (해당 행 무시)\n- **헤더 행**: 1행\n- **데이터 시작 행**: 2행"
   },
+  "agentMode": "auto",
   "pipeline": {
     "preset": "full"
   },

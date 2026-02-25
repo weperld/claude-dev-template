@@ -11,7 +11,7 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 # ─────────────────────────────────────────────
 # 1. 설정 파일 읽기
 # ─────────────────────────────────────────────
-Write-Host "`n[1/8] 설정 파일 읽기..." -ForegroundColor Cyan
+Write-Host "`n[1/9] 설정 파일 읽기..." -ForegroundColor Cyan
 
 $configFile = Join-Path $ScriptDir $ConfigPath
 if (-not (Test-Path $configFile)) {
@@ -78,9 +78,53 @@ $commandCount = $commandFiles.Count + $tmplCommandFiles.Count
 Write-Host "  커스텀 명령어: ${commandCount}개" -ForegroundColor Green
 
 # ─────────────────────────────────────────────
-# 2. 프리셋 및 스테이지 설정 로드
+# 2. 플러그인 감지 및 에이전트 모드 결정
 # ─────────────────────────────────────────────
-Write-Host "`n[2/8] 파이프라인 프리셋 로드..." -ForegroundColor Cyan
+Write-Host "`n[2/9] 에이전트 모드 결정..." -ForegroundColor Cyan
+
+# agentMode 읽기 (기본값: auto)
+$agentMode = "auto"
+if ($config.PSObject.Properties['agentMode']) {
+    $agentMode = $config.agentMode
+}
+
+# 플러그인 감지
+$detectedPlugins = @()
+$globalClaudeMd = Join-Path $env:USERPROFILE ".claude\CLAUDE.md"
+if (Test-Path $globalClaudeMd) {
+    $globalContent = Get-Content $globalClaudeMd -Raw -Encoding UTF8
+    if ($globalContent -match '<!-- OMC:START -->') {
+        $detectedPlugins += "oh-my-claudecode"
+    }
+}
+
+if ($agentMode -eq "auto") {
+    if ($detectedPlugins.Count -gt 0) {
+        Write-Host "  감지된 플러그인: $($detectedPlugins -join ', ')" -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "  에이전트 모드를 선택하세요:" -ForegroundColor White
+        Write-Host "    [1] 템플릿 에이전트 (기본) - 템플릿의 7개 역할 사용" -ForegroundColor White
+        Write-Host "    [2] 플러그인 위임 - 파이프라인만 유지, 에이전트는 플러그인에 위임" -ForegroundColor White
+        Write-Host "    [3] 하이브리드 - 파이프라인 + 플러그인 에이전트 매핑" -ForegroundColor White
+        Write-Host ""
+        $choice = Read-Host "  선택 (1/2/3, 기본: 1)"
+        switch ($choice) {
+            "2" { $agentMode = "plugin" }
+            "3" { $agentMode = "hybrid" }
+            default { $agentMode = "template" }
+        }
+    } else {
+        $agentMode = "template"
+        Write-Host "  외부 플러그인 미감지 - 템플릿 에이전트 모드 사용" -ForegroundColor Green
+    }
+}
+
+Write-Host "  에이전트 모드: $agentMode" -ForegroundColor Green
+
+# ─────────────────────────────────────────────
+# 3. 프리셋 및 스테이지 설정 로드
+# ─────────────────────────────────────────────
+Write-Host "`n[3/9] 파이프라인 프리셋 로드..." -ForegroundColor Cyan
 
 $presetName = $config.pipeline.preset
 $presetFile = Join-Path $ScriptDir "presets\$presetName.json"
@@ -217,7 +261,7 @@ function Replace-TemplateVars {
 # ─────────────────────────────────────────────
 # 3. 동적 파이프라인 컨텐츠 생성
 # ─────────────────────────────────────────────
-Write-Host "`n[3/8] 동적 파이프라인 컨텐츠 생성..." -ForegroundColor Cyan
+Write-Host "`n[4/9] 동적 파이프라인 컨텐츠 생성..." -ForegroundColor Cyan
 
 $dynamicVars = @{}
 
@@ -440,7 +484,7 @@ Write-Host "  $($mergedStages.Count)개 스테이지 동적 컨텐츠 생성 완
 # ─────────────────────────────────────────────
 # 4. .tmpl 파일 처리
 # ─────────────────────────────────────────────
-Write-Host "`n[4/8] 템플릿 파일 처리..." -ForegroundColor Cyan
+Write-Host "`n[5/9] 템플릿 파일 처리..." -ForegroundColor Cyan
 
 $tmplFiles = Get-ChildItem -Path $ScriptDir -Filter "*.tmpl" -Recurse
 $processedCount = 0
@@ -461,7 +505,7 @@ Write-Host "  $processedCount 개 템플릿 처리 완료" -ForegroundColor Gree
 # ─────────────────────────────────────────────
 # 5. WIP 템플릿 생성 (메타 템플릿 + 병합 데이터)
 # ─────────────────────────────────────────────
-Write-Host "`n[5/8] WIP 템플릿 생성..." -ForegroundColor Cyan
+Write-Host "`n[6/9] WIP 템플릿 생성..." -ForegroundColor Cyan
 
 $metaTemplate = Get-Content (Join-Path $ScriptDir ".wips\META-TEMPLATE.md") -Raw -Encoding UTF8
 
@@ -515,7 +559,7 @@ Write-Host "  $wipCount 개 WIP 템플릿 생성 완료" -ForegroundColor Green
 # ─────────────────────────────────────────────
 # 6. .wips/active/ 디렉토리 생성
 # ─────────────────────────────────────────────
-Write-Host "`n[6/8] WIP 디렉토리 구조 생성..." -ForegroundColor Cyan
+Write-Host "`n[7/9] WIP 디렉토리 구조 생성..." -ForegroundColor Cyan
 
 foreach ($ms in $mergedStages) {
     if ([string]::IsNullOrEmpty($ms.CrosscheckAgent)) {
@@ -563,7 +607,7 @@ Write-Host "  디렉토리 구조 생성 완료" -ForegroundColor Green
 # ─────────────────────────────────────────────
 # 7. .example.md → .md 복사
 # ─────────────────────────────────────────────
-Write-Host "`n[7/8] 가이드 스켈레톤 복사..." -ForegroundColor Cyan
+Write-Host "`n[8/9] 가이드 스켈레톤 복사..." -ForegroundColor Cyan
 
 $exampleFiles = Get-ChildItem -Path (Join-Path $ScriptDir ".guides") -Filter "*.example.md"
 foreach ($example in $exampleFiles) {
@@ -583,12 +627,16 @@ Write-Host "  가이드 스켈레톤 복사 완료" -ForegroundColor Green
 # ─────────────────────────────────────────────
 # 8. 완료 요약
 # ─────────────────────────────────────────────
-Write-Host "`n[8/8] 초기화 완료!" -ForegroundColor Cyan
+Write-Host "`n[9/9] 초기화 완료!" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "  ============================================" -ForegroundColor White
 Write-Host "  프로젝트: $($config.project.name)" -ForegroundColor White
 Write-Host "  파이프라인: $($preset.name) ($($stages.Count)단계)" -ForegroundColor White
 Write-Host "  파이프라인: $($dynamicVars.PipelineArrow)" -ForegroundColor White
+Write-Host "  에이전트 모드: $agentMode" -ForegroundColor White
+if ($detectedPlugins.Count -gt 0) {
+    Write-Host "  감지된 플러그인: $($detectedPlugins -join ', ')" -ForegroundColor White
+}
 Write-Host "  ============================================" -ForegroundColor White
 Write-Host ""
 
