@@ -1,5 +1,20 @@
 ﻿# MyProject - Claude Code 프로젝트 설정
 
+## 검색 규칙 (필수 준수)
+- 코드 검색 시 반드시 `./.search/ai-grep`을 먼저 사용할 것
+- 전체 파일을 읽지 말고 `--lines N-M` 옵션으로 필요한 부분만 읽을 것
+- 직접 파일 탐색은 ai-grep으로 찾을 수 없을 때만 최후의 수단으로 사용
+
+## 검색 도구 사용법
+```bash
+PYTHONIOENCODING=utf-8 python ./.search/ai-grep stats                        # 코드베이스 개요
+PYTHONIOENCODING=utf-8 python ./.search/ai-grep relevant "query" --top 5     # 관련 파일 랭킹
+PYTHONIOENCODING=utf-8 python ./.search/ai-grep search "keyword"             # 전문 검색 + 스니펫
+PYTHONIOENCODING=utf-8 python ./.search/ai-grep refs "ClassName"             # 심볼 참조 검색
+PYTHONIOENCODING=utf-8 python ./.search/ai-grep get "file.md" --lines 10-50  # 특정 줄만 읽기
+PYTHONIOENCODING=utf-8 python ./.search/ai-grep outline "file.md"            # 파일 구조 확인
+```
+
 ## 프로젝트 개요
 
 프로젝트 설명을 입력하세요
@@ -15,6 +30,24 @@
 프로젝트 폴더 구조 설명
 
 프로젝트 도메인 규칙
+
+## 아키텍처
+- **템플릿 엔진**: `init.ps1` / `init.sh` (설정 기반 프로젝트 파일 생성)
+- **프리셋**: `presets/` (사전 정의된 설정 프로필)
+- **템플릿 파일**: `*.tmpl` (Mustache 스타일 변수 치환 대상)
+- **생성 결과물**: `AGENTS.md`, `PROJECT_SUMMARY.md`, `WORK_IN_PROGRESS.md` 등
+- **워크플로우**: `WORKFLOW_PLANNING/` (파이프라인, 게이트, WIP 관리)
+- **명령어**: `.claude/commands/` (커스텀 슬래시 명령어)
+- **가이드**: `.guides/` (빌드, 코드 스타일, 테스트 등 개발 가이드)
+
+## 핵심 흐름
+`template-config.json` 설정 → `init.ps1`/`init.sh` 실행 → `.tmpl` 파일 렌더링 → 프로젝트 파일 생성 → Claude Code 워크플로우 활성화
+
+## 도메인 용어
+- **WIP**: Work In Progress, 작업 추적 단위 (`WORK_IN_PROGRESS.md`)
+- **Gate**: 파이프라인 단계별 검증 관문 (`WORKFLOW_PLANNING/GATES.md`)
+- **파이프라인**: Plan→Design→Code→Test→Docs→QA→Review 워크플로우 (`WORKFLOW_PLANNING/PIPELINE.md`)
+- **프리셋**: lite/standard/full 등 사전 정의된 설정 프로필 (`presets/`)
 
 ---
 

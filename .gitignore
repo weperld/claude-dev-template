@@ -39,3 +39,9 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
+# AI-grep 인덱스 데이터 (각자 로컬 생성)
+.search/data/
+.search/*.db
+.search/SEARCH/
+SEARCH/
