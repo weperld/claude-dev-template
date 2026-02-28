@@ -1,19 +1,8 @@
 ﻿# MyProject - Claude Code 프로젝트 설정
 
-## 검색 규칙 (필수 준수)
-- 코드 검색 시 반드시 `./.search/ai-grep`을 먼저 사용할 것
-- 전체 파일을 읽지 말고 `--lines N-M` 옵션으로 필요한 부분만 읽을 것
-- 직접 파일 탐색은 ai-grep으로 찾을 수 없을 때만 최후의 수단으로 사용
-
-## 검색 도구 사용법
-```bash
-PYTHONIOENCODING=utf-8 python ./.search/ai-grep stats                        # 코드베이스 개요
-PYTHONIOENCODING=utf-8 python ./.search/ai-grep relevant "query" --top 5     # 관련 파일 랭킹
-PYTHONIOENCODING=utf-8 python ./.search/ai-grep search "keyword"             # 전문 검색 + 스니펫
-PYTHONIOENCODING=utf-8 python ./.search/ai-grep refs "ClassName"             # 심볼 참조 검색
-PYTHONIOENCODING=utf-8 python ./.search/ai-grep get "file.md" --lines 10-50  # 특정 줄만 읽기
-PYTHONIOENCODING=utf-8 python ./.search/ai-grep outline "file.md"            # 파일 구조 확인
-```
+## 검색 규칙
+- 코드 검색 시 AI-grep을 먼저 사용할 것 (상세: `.guides/SEARCH_GUIDE.md`)
+- Windows: `PYTHONIOENCODING=utf-8 python .search/ai-grep [command]`
 
 ## 프로젝트 개요
 
@@ -60,7 +49,7 @@ PYTHONIOENCODING=utf-8 python ./.search/ai-grep outline "file.md"            # �
 | **프로젝트 요약** | `PROJECT_SUMMARY.md` | 30초 프로젝트 이해 |
 | **에이전트 규칙** | `AGENTS.md` | 절대 규칙, Self-Validation, Cross-Stage Review |
 | **에이전트 역할** | `AGENT_ROLES.md` | 각 에이전트 역할 정의 |
-| **워크플로우** | `WORKFLOW_PLANNING/INDEX.md` | 자동 업데이트 시스템, WIP 관리 |
+| **워크플로우** | `WORKFLOW_PLANNING/INDEX.md` | 파이프라인, WIP 추적, 문서화 규칙 |
 | **작업 현황** | `WORK_IN_PROGRESS.md` | 현재 진행 중인 작업 |
 | **빠른 참조** | `QUICK_REFERENCE.md` | 자주 사용하는 명령어/패턴 |
 
@@ -68,6 +57,8 @@ PYTHONIOENCODING=utf-8 python ./.search/ai-grep outline "file.md"            # �
 
 | 문서 | 용도 |
 |------|------|
+| `.guides/SEARCH_GUIDE.md` | AI-grep 사용법 및 검색 전략 |
+| `.guides/DEVELOPMENT_RULES.md` | 수정 규칙, 파이프라인, 수렴 검증 |
 | `.guides/BUILD_GUIDE.md` | 빌드 및 개발 절차 |
 | `.guides/CODE_STYLE.md` | 코드 스타일 가이드 |
 | `.guides/TECHNICAL_RULES.md` | 기술 요구사항 및 표준 |
@@ -88,74 +79,7 @@ PYTHONIOENCODING=utf-8 python ./.search/ai-grep outline "file.md"            # �
 - **빈 catch 블록 금지**: catch(e) {} 사용 금지
 - **추측 금지**: 모호한 요청은 반드시 사용자에게 확인
 
-### 이름/타입명 수정 규칙 (전역, 파이프라인 무관)
-
-> **위반 시 조치**: 수정을 완료로 간주하지 않으며, 누락된 단계를 즉시 수행해야 한다.
-
-이름(변수, 함수, 클래스, Enum, 인터페이스 등) 또는 타입명을 변경할 때는 반드시 다음 절차를 따른다:
-
-1. **전수 조사**: 수정 전 Grep 또는 LSP Find References로 해당 이름의 **모든 참조를 빠짐없이 조사**한다.
-2. **수정 계획 수립 및 사용자 확인**: 변경 대상 목록(파일, 라인)을 정리하고, 수정 계획을 사용자에게 제시하여 **확인을 받은 후** 진행한다.
-3. **수정 대상 개별 판별**: 동일 문자열이라도 실제 수정 대상인지 **하나하나 판별**한다 (동명의 다른 심볼, 주석, 문자열 리터럴 등 구분).
-4. **컴파일 에러 0건 확인**: 수정 완료 후 LSP 진단 또는 빌드를 통해 **에러 0건을 실제로 확인**한다.
-
-### 값 수정 규칙 (전역, 파이프라인 무관)
-
-> **위반 시 조치**: 수정을 완료로 간주하지 않으며, 누락된 단계를 즉시 수행해야 한다.
-
-상수, 설정값, 매직넘버, 기본값, Enum 값 등 **코드 내 값을 변경**할 때는 반드시 다음 절차를 따른다:
-
-1. **현재 값의 의도 파악**: 해당 값이 왜 현재 값으로 설정되어 있는지, 원래 의도와 맥락을 코드·주석·히스토리를 통해 파악한다.
-2. **영향 범위 조사**: Grep 또는 LSP Find References로 해당 값을 **참조·비교·의존하는 모든 코드를 조사**한다 (조건 분기, 계산식, 외부 연동 등 포함).
-3. **수정 계획 수립 및 사용자 확인**: 변경 사유, 영향 범위, 기존 동작과의 차이를 정리하여 사용자에게 **확인을 받은 후** 진행한다.
-4. **호환성 검증**: 값 변경이 기존 동작·데이터·외부 인터페이스와의 호환성을 깨뜨리지 않는지 확인한다.
-5. **컴파일 에러 0건 확인**: 수정 완료 후 LSP 진단 또는 빌드를 통해 **에러 0건을 실제로 확인**한다.
-
-### 파이프라인 강제 규칙 (Hard Block)
-
-> **위반 시 조치**: 작업을 완료로 간주하지 않으며, 누락된 단계를 즉시 수행해야 한다.
-
-#### 작업 진입 규칙
-
-**모든 코드 변경 작업**은 반드시 커스텀 명령어를 통해 시작해야 한다. 사용자가 커스텀 명령어 없이 직접 코드 수정을 요청한 경우, 작업 규모를 판단하여 적절한 명령어 사용을 안내한다.
-
-| 작업 규모 | 판단 기준 | 사용 명령어 |
-|-----------|----------|------------|
-| **대규모** | 새 기능 추가, 복잡한 로직 변경, 아키텍처 변경 | `/project:신규` 또는 `/project:수정` |
-| **중소규모** | 버그 수정, 리팩토링, 구조 변경, 설정 수정 | `/project:간편` |
-
-#### 공통 필수 검증 (모든 규모 적용)
-
-어떤 명령어를 사용하든, **코드 변경 작업 완료 전** 반드시 다음을 수행해야 한다:
-
-1. **빌드 검증**: 빌드 에러 0건 확인 (LSP 또는 수동 코드 리뷰)
-2. **검증 항목 확인**: `.guides/VERIFICATION_ITEMS.md`의 해당 체크리스트 확인
-3. **Self-Validation Checklist**: AGENTS.md의 체크리스트를 수행하고 결과를 보고
-4. **수렴 검증 확인** (중소규모 작업 한정): 작업 완료 보고 시 사용자에게 "수렴 검증을 추가로 수행할까요?"를 확인한다. 사용자가 요청하면 결과물의 누락·모호·위험 요소가 0건이 될 때까지 반복 점검한다.
-5. **위 항목을 수행하지 않은 작업은 완료로 간주하지 않는다**
-6. **문제 발생 시** 재발 가능성이 있는 문제는 `.guides/VERIFICATION_ITEMS.md`에 검증 항목을 추가
-
-#### 대규모 작업 추가 요구사항
-
-`/project:신규`, `/project:수정` 사용 시 공통 필수 검증에 더해 다음을 수행한다:
-
-1. **작업 시작 전** AGENTS.md 필독 순서 (AGENTS.md → PROJECT_SUMMARY.md → WORKFLOW_PLANNING/INDEX.md → WORK_IN_PROGRESS.md)
-2. **WorkID 생성** 및 WORK_IN_PROGRESS.md 기록
-3. **전체 파이프라인** 및 Gate 검증
-
-### 수렴 검증 프로토콜 (전역 적용)
-
-이 프로젝트 자체의 모든 개발 작업에 수렴 검증 프로토콜을 적용합니다.
-파이프라인 단계와 무관하게, 유의미한 변경 작업 시 다음 프로세스를 따릅니다:
-
-1. **작업 수행** → 변경 사항 구현
-2. **결과물 분석** → 보완 사항 도출 및 분류
-   - **필수(MUST)**: 동작 오류, 데이터 불일치, 누락된 로직, 파일 간 정합성 깨짐
-   - **선택(OPT)**: 가독성, 문서 표현, 스타일 등 동작에 영향 없는 개선
-3. **필수 > 0건?**
-   - **YES**: 필수 보완 사항을 사용자에게 제시 → **사용자 확인 후** 반영 → 2번부터 재분석
-   - **NO**: 수렴 달성 → 작업 완료
-4. 매 반복의 분류 결과를 기록 (반복 번호, MUST/OPT 건수, 수정 내용)
+> 이름/값 수정 규칙, 파이프라인 강제 규칙, 수렴 검증 프로토콜 → `.guides/DEVELOPMENT_RULES.md` 참조
 
 ---
 
@@ -174,37 +98,8 @@ PYTHONIOENCODING=utf-8 python ./.search/ai-grep outline "file.md"            # �
 
 ---
 
-## 워크플로우 파이프라인
-
-```
-Plan → Design → Code → Test → Docs → QA → Review
-```
-
-각 단계마다 Gate 검증이 수행되며, 3번 실패 시 이전 단계로 롤백됩니다.
-계획/설계 단계에서는 **수렴 검증**이 적용됩니다: 결과물의 누락·모호·위험 요소(필수 보완 사항)가 0건이 될 때까지 사용자 확인을 거쳐 반복 점검 후 Gate로 진행합니다.
-상세 프로세스는 `WORKFLOW_PLANNING/INDEX.md`를 참조하세요.
-
----
-
-## WIP 추적 시스템
-
-- **WorkID 형식**: `WIP-YYYYMMDD-NNN`
-- **활성 WIP**: `.wips/active/{Stage}/WIP-{Stage}-YYYYMMDD-NNN.md`
-- **완료 WIP**: `.wips/archive/{Stage}/WIP-{Stage}-YYYYMMDD-NNN.md`
-- **전체 현황**: `WORK_IN_PROGRESS.md`
-
----
-
-## 작업 중 문서화 규칙
-
-대규모 작업(`/project:신규`, `/project:수정`) 시 다른 PC 또는 다른 사용자가 작업을 이어받을 수 있도록 다음을 준수합니다:
-
-1. **작업 시작** → `WORK_IN_PROGRESS.md`에 WorkID 및 계획 기록
-2. **각 단계 완료** → 체크박스 업데이트 + 진행 상황 타임스탬프
-3. **중단 시** → 현재 상태, 다음 할 일, 미해결 이슈를 명시적으로 기록
-4. **재개 시** → `/project:작업이어하기 WIP-YYYYMMDD-NNN`으로 이전 작업 확인 후 이어서 진행
-
-> **참고**: 중소규모 작업(`/project:간편`)에서는 WIP 추적이 필요하지 않으며, 공통 필수 검증만 수행합니다.
+## 워크플로우
+Plan→Design→Code→Test→Docs→QA→Review. 상세 프로세스 및 WIP 추적은 `WORKFLOW_PLANNING/INDEX.md` 참조.
 
 ---
 
