@@ -41,6 +41,12 @@ Thumbs.db
 *.swp
 *.swo
 
+# Python 캐시
+__pycache__/
+
+# init 생성물 (검증 항목은 프로젝트별 누적)
+.guides/VERIFICATION_ITEMS.md
+
 # AI-grep 인덱스 데이터 (각자 로컬 생성)
 .search/data/
 .search/*.db

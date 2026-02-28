@@ -67,6 +67,7 @@
 | `.guides/COMMIT_RULES.md` | Git 커밋 규칙 |
 | `.guides/PLANNING_TEMPLATE.md` | 기획 문서 템플릿 |
 | `.guides/VERIFICATION_ITEMS.md` | 검증 항목 체크리스트 |
+| `.guides/METHOD_B_REFERENCE.md` | Method B 참조 문서 |
 
 ---
 
