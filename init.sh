@@ -244,7 +244,6 @@ replace_template_vars() {
     _tpl_replace "OUTPUT_FORMATS" "$(echo "$CONFIG" | jq -r '.project.outputFormats')"
     _tpl_replace "CLI_OPTIONS" "$(echo "$CONFIG" | jq -r '.project.cliOptions')"
     _tpl_replace "DOMAIN_RULES" "$(echo "$CONFIG" | jq -r '.project.domainRules')"
-    _tpl_replace "COMMAND_COUNT" "$COMMAND_COUNT"
 
     # 언어별 규칙
     local VALIDATION_ITEMS

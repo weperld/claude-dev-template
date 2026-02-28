@@ -210,7 +210,6 @@ function Replace-TemplateVars {
     $Content = $Content.Replace('{{OUTPUT_FORMATS}}', $config.project.outputFormats)
     $Content = $Content.Replace('{{CLI_OPTIONS}}', $config.project.cliOptions)
     $Content = $Content.Replace('{{DOMAIN_RULES}}', $config.project.domainRules)
-    $Content = $Content.Replace('{{COMMAND_COUNT}}', "$commandCount")
 
     # 언어별 규칙
     $Content = $Content.Replace('{{TYPE_SAFETY_RULES}}', $config.languageRules.typeSafety)
