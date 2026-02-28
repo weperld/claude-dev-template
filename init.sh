@@ -196,60 +196,69 @@ resolve_rollback_target() {
 }
 
 # ─────────────────────────────────────────────
-# 헬퍼: 템플릿 변수 치환 함수
+# 헬퍼: 안전한 템플릿 변수 치환
+# bash parameter expansion에서 \ 가 이스케이프로 해석되는 것을 방지
 # ─────────────────────────────────────────────
+_tpl_replace() {
+    local var_name="$1"
+    local value="$2"
+    # 백슬래시를 이중 이스케이프하여 치환 시 원본 보존
+    value="${value//\\/\\\\}"
+    content="${content//\{\{${var_name}\}\}/$value}"
+}
+
 replace_template_vars() {
     local content="$1"
 
     # 동적 파이프라인 변수 (먼저 치환)
-    content="${content//\{\{PIPELINE_ARROW\}\}/$DYN_PIPELINE_ARROW}"
-    content="${content//\{\{GATED_PIPELINE_ARROW\}\}/$DYN_GATED_PIPELINE_ARROW}"
-    content="${content//\{\{STAGE_COUNT\}\}/$STAGE_COUNT}"
-    content="${content//\{\{PIPELINE_STAGES_LIST\}\}/$DYN_PIPELINE_STAGES_LIST}"
-    content="${content//\{\{WIP_COMPLETED_STEPS\}\}/$DYN_WIP_COMPLETED_STEPS}"
-    content="${content//\{\{WIP_VALIDATION_GATES\}\}/$DYN_WIP_VALIDATION_GATES}"
-    content="${content//\{\{GATE_OVERVIEW_TABLE\}\}/$DYN_GATE_OVERVIEW_TABLE}"
-    content="${content//\{\{GATE_DETAILS\}\}/$DYN_GATE_DETAILS}"
-    content="${content//\{\{CROSS_STAGE_REVIEW_ROWS\}\}/$DYN_CROSS_STAGE_REVIEW_ROWS}"
-    content="${content//\{\{WIP_FOLDER_TREE\}\}/$DYN_WIP_FOLDER_TREE}"
-    content="${content//\{\{AGENT_STAGE_TABLE\}\}/$DYN_AGENT_STAGE_TABLE}"
-    content="${content//\{\{PIPELINE_WORKFLOW_AUTO\}\}/$DYN_PIPELINE_WORKFLOW_AUTO}"
-    content="${content//\{\{CONVERGENCE_STAGES_TEXT\}\}/$DYN_CONVERGENCE_STAGES_TEXT}"
-    content="${content//\{\{CONVERGENCE_STAGES_LIST\}\}/$DYN_CONVERGENCE_STAGES_LIST}"
+    _tpl_replace "PIPELINE_ARROW" "$DYN_PIPELINE_ARROW"
+    _tpl_replace "GATED_PIPELINE_ARROW" "$DYN_GATED_PIPELINE_ARROW"
+    _tpl_replace "STAGE_COUNT" "$STAGE_COUNT"
+    _tpl_replace "PIPELINE_STAGES_LIST" "$DYN_PIPELINE_STAGES_LIST"
+    _tpl_replace "WIP_COMPLETED_STEPS" "$DYN_WIP_COMPLETED_STEPS"
+    _tpl_replace "WIP_VALIDATION_GATES" "$DYN_WIP_VALIDATION_GATES"
+    _tpl_replace "GATE_OVERVIEW_TABLE" "$DYN_GATE_OVERVIEW_TABLE"
+    _tpl_replace "GATE_DETAILS" "$DYN_GATE_DETAILS"
+    _tpl_replace "CROSS_STAGE_REVIEW_ROWS" "$DYN_CROSS_STAGE_REVIEW_ROWS"
+    _tpl_replace "WIP_FOLDER_TREE" "$DYN_WIP_FOLDER_TREE"
+    _tpl_replace "AGENT_STAGE_TABLE" "$DYN_AGENT_STAGE_TABLE"
+    _tpl_replace "PIPELINE_WORKFLOW_AUTO" "$DYN_PIPELINE_WORKFLOW_AUTO"
+    _tpl_replace "CONVERGENCE_STAGES_TEXT" "$DYN_CONVERGENCE_STAGES_TEXT"
+    _tpl_replace "CONVERGENCE_STAGES_LIST" "$DYN_CONVERGENCE_STAGES_LIST"
 
     # 검색 규칙 (AI-grep 옵션)
-    content="${content//\{\{SEARCH_RULES_SECTION\}\}/$DYN_SEARCH_RULES_SECTION}"
+    _tpl_replace "SEARCH_RULES_SECTION" "$DYN_SEARCH_RULES_SECTION"
 
     # 프로젝트 정보
-    content="${content//\{\{PROJECT_NAME\}\}/$(echo "$CONFIG" | jq -r '.project.name')}"
-    content="${content//\{\{PROJECT_DESCRIPTION\}\}/$(echo "$CONFIG" | jq -r '.project.description')}"
-    content="${content//\{\{TECH_STACK\}\}/$(echo "$CONFIG" | jq -r '.project.techStack')}"
-    content="${content//\{\{LIBRARIES\}\}/$(echo "$CONFIG" | jq -r '.project.libraries')}"
-    content="${content//\{\{BUILD_COMMAND\}\}/$(echo "$CONFIG" | jq -r '.project.buildCommand')}"
-    content="${content//\{\{TEST_COMMAND\}\}/$(echo "$CONFIG" | jq -r '.project.testCommand')}"
-    content="${content//\{\{RUN_COMMAND\}\}/$(echo "$CONFIG" | jq -r '.project.runCommand')}"
-    content="${content//\{\{PROJECT_FILE\}\}/$(echo "$CONFIG" | jq -r '.project.projectFile')}"
-    content="${content//\{\{PROJECT_STRUCTURE\}\}/$(echo "$CONFIG" | jq -r '.project.projectStructure')}"
-    content="${content//\{\{NAMING_CONVENTIONS\}\}/$(echo "$CONFIG" | jq -r '.project.namingConventions')}"
-    content="${content//\{\{FEATURE_CATEGORIES\}\}/$(echo "$CONFIG" | jq -r '.project.featureCategories')}"
-    content="${content//\{\{OUTPUT_FORMATS\}\}/$(echo "$CONFIG" | jq -r '.project.outputFormats')}"
-    content="${content//\{\{CLI_OPTIONS\}\}/$(echo "$CONFIG" | jq -r '.project.cliOptions')}"
-    content="${content//\{\{DOMAIN_RULES\}\}/$(echo "$CONFIG" | jq -r '.project.domainRules')}"
-    content="${content//\{\{COMMAND_COUNT\}\}/$COMMAND_COUNT}"
+    _tpl_replace "PROJECT_NAME" "$(echo "$CONFIG" | jq -r '.project.name')"
+    _tpl_replace "PROJECT_DESCRIPTION" "$(echo "$CONFIG" | jq -r '.project.description')"
+    _tpl_replace "TECH_STACK" "$(echo "$CONFIG" | jq -r '.project.techStack')"
+    _tpl_replace "LIBRARIES" "$(echo "$CONFIG" | jq -r '.project.libraries')"
+    _tpl_replace "BUILD_COMMAND" "$(echo "$CONFIG" | jq -r '.project.buildCommand')"
+    _tpl_replace "TEST_COMMAND" "$(echo "$CONFIG" | jq -r '.project.testCommand')"
+    _tpl_replace "RUN_COMMAND" "$(echo "$CONFIG" | jq -r '.project.runCommand')"
+    _tpl_replace "PROJECT_FILE" "$(echo "$CONFIG" | jq -r '.project.projectFile')"
+    _tpl_replace "PROJECT_STRUCTURE" "$(echo "$CONFIG" | jq -r '.project.projectStructure')"
+    _tpl_replace "NAMING_CONVENTIONS" "$(echo "$CONFIG" | jq -r '.project.namingConventions')"
+    _tpl_replace "FEATURE_CATEGORIES" "$(echo "$CONFIG" | jq -r '.project.featureCategories')"
+    _tpl_replace "OUTPUT_FORMATS" "$(echo "$CONFIG" | jq -r '.project.outputFormats')"
+    _tpl_replace "CLI_OPTIONS" "$(echo "$CONFIG" | jq -r '.project.cliOptions')"
+    _tpl_replace "DOMAIN_RULES" "$(echo "$CONFIG" | jq -r '.project.domainRules')"
+    _tpl_replace "COMMAND_COUNT" "$COMMAND_COUNT"
 
     # 언어별 규칙
     local VALIDATION_ITEMS
     VALIDATION_ITEMS=$(echo "$CONFIG" | jq -r '.languageRules.validationItems')
-    content="${content//\{\{TYPE_SAFETY_RULES\}\}/$(echo "$CONFIG" | jq -r '.languageRules.typeSafety')}"
-    content="${content//\{\{TYPE_SAFETY_ANTIPATTERNS\}\}/$(echo "$CONFIG" | jq -r '.languageRules.antiPatterns')}"
-    content="${content//\{\{ARCHITECT_LANG_RULES\}\}/$(echo "$CONFIG" | jq -r '.languageRules.architectRules')}"
-    content="${content//\{\{DEVELOPER_LANG_RULES\}\}/$(echo "$CONFIG" | jq -r '.languageRules.developerRules')}"
-    content="${content//\{\{DESIGN_REVIEW_ITEMS\}\}/$(echo "$CONFIG" | jq -r '.languageRules.designReviewItems')}"
-    content="${content//\{\{VALIDATION_ITEMS\}\}/$VALIDATION_ITEMS}"
-    content="${content//\{\{LANG_RULES\}\}/$VALIDATION_ITEMS}"
-    content="${content//\{\{LANGUAGE_SPECIFIC_GATE_CHECKS\}\}/$VALIDATION_ITEMS}"
-    content="${content//\{\{PROJECT_FILE_STRUCTURE\}\}/$(echo "$CONFIG" | jq -r '.project.projectStructure')}"
-    content="${content//\{\{PROJECT_EXAMPLES\}\}/$(echo "$CONFIG" | jq -r '.project.projectStructure')}"
+    _tpl_replace "TYPE_SAFETY_RULES" "$(echo "$CONFIG" | jq -r '.languageRules.typeSafety')"
+    _tpl_replace "TYPE_SAFETY_ANTIPATTERNS" "$(echo "$CONFIG" | jq -r '.languageRules.antiPatterns')"
+    _tpl_replace "ARCHITECT_LANG_RULES" "$(echo "$CONFIG" | jq -r '.languageRules.architectRules')"
+    _tpl_replace "DEVELOPER_LANG_RULES" "$(echo "$CONFIG" | jq -r '.languageRules.developerRules')"
+    _tpl_replace "DESIGN_REVIEW_ITEMS" "$(echo "$CONFIG" | jq -r '.languageRules.designReviewItems')"
+    _tpl_replace "VALIDATION_ITEMS" "$VALIDATION_ITEMS"
+    _tpl_replace "LANG_RULES" "$VALIDATION_ITEMS"
+    _tpl_replace "LANGUAGE_SPECIFIC_GATE_CHECKS" "$VALIDATION_ITEMS"
+    _tpl_replace "PROJECT_FILE_STRUCTURE" "$(echo "$CONFIG" | jq -r '.project.projectStructure')"
+    _tpl_replace "PROJECT_EXAMPLES" "$(echo "$CONFIG" | jq -r '.project.projectStructure')"
 
     # 절대 규칙 요약
     local TYPE_SAFETY
@@ -257,24 +266,24 @@ replace_template_vars() {
     local HARD_BLOCKS="- **타입 안전성**: ${TYPE_SAFETY}
 - **빈 catch 블록 금지**: catch(e) {} 사용 금지
 - **추측 금지**: 모호한 요청은 반드시 사용자에게 확인"
-    content="${content//\{\{ABSOLUTE_RULES_SUMMARY\}\}/$HARD_BLOCKS}"
-    content="${content//\{\{HARD_BLOCKS_SUMMARY\}\}/$HARD_BLOCKS}"
+    _tpl_replace "ABSOLUTE_RULES_SUMMARY" "$HARD_BLOCKS"
+    _tpl_replace "HARD_BLOCKS_SUMMARY" "$HARD_BLOCKS"
 
     # 에러 체크리스트 및 기술 원칙
     local BUILD_ERROR_CHECKLIST
     BUILD_ERROR_CHECKLIST=$(echo "$CONFIG" | jq -r '.languageRules.buildErrorChecklist // ""')
-    content="${content//\{\{BUILD_ERROR_CHECKLIST\}\}/$BUILD_ERROR_CHECKLIST}"
+    _tpl_replace "BUILD_ERROR_CHECKLIST" "$BUILD_ERROR_CHECKLIST"
     local RUNTIME_ERROR_CHECKLIST
     RUNTIME_ERROR_CHECKLIST=$(echo "$CONFIG" | jq -r '.languageRules.runtimeErrorChecklist // ""')
-    content="${content//\{\{RUNTIME_ERROR_CHECKLIST\}\}/$RUNTIME_ERROR_CHECKLIST}"
+    _tpl_replace "RUNTIME_ERROR_CHECKLIST" "$RUNTIME_ERROR_CHECKLIST"
     local TECHNICAL_PRINCIPLES
     TECHNICAL_PRINCIPLES=$(echo "$CONFIG" | jq -r '.languageRules.technicalPrinciples // ""')
-    content="${content//\{\{TECHNICAL_PRINCIPLES\}\}/$TECHNICAL_PRINCIPLES}"
+    _tpl_replace "TECHNICAL_PRINCIPLES" "$TECHNICAL_PRINCIPLES"
 
     # 코드 패턴
     local CODE_PATTERNS
     CODE_PATTERNS=$(echo "$CONFIG" | jq -r '.languageRules.codePatterns // ""')
-    content="${content//\{\{CODE_PATTERNS\}\}/$CODE_PATTERNS}"
+    _tpl_replace "CODE_PATTERNS" "$CODE_PATTERNS"
 
     printf '%s' "$content"
 }
