@@ -15,6 +15,9 @@
     "cliOptions": "CLI 옵션 설명",
     "domainRules": "프로젝트 도메인 규칙"
   },
+  "features": {
+    "aiGrep": false
+  },
   "pipeline": {
     "preset": "full"
   },

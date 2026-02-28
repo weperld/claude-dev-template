@@ -192,6 +192,9 @@ function Replace-TemplateVars {
     $Content = $Content.Replace('{{CONVERGENCE_STAGES_TEXT}}', $dynamicVars.ConvergenceStagesText)
     $Content = $Content.Replace('{{CONVERGENCE_STAGES_LIST}}', $dynamicVars.ConvergenceStagesList)
 
+    # 검색 규칙 (AI-grep 옵션)
+    $Content = $Content.Replace('{{SEARCH_RULES_SECTION}}', $dynamicVars.SearchRulesSection)
+
     # 프로젝트 정보 (.Replace() 사용: config 값의 $ 문자가 정규식 역참조로 해석되는 것을 방지)
     $Content = $Content.Replace('{{PROJECT_NAME}}', $config.project.name)
     $Content = $Content.Replace('{{PROJECT_DESCRIPTION}}', $config.project.description)
@@ -479,6 +482,43 @@ if ($convergenceStages.Count -gt 0) {
     $dynamicVars.ConvergenceStagesList = ""
 }
 
+# ── SEARCH_RULES_SECTION: AI-grep 검색 규칙 (features.aiGrep 옵션) ──
+$aiGrepEnabled = $false
+if ($config.PSObject.Properties['features'] -and $config.features.PSObject.Properties['aiGrep']) {
+    $aiGrepEnabled = $config.features.aiGrep -eq $true
+}
+
+# AI-grep 설정 선택 프롬프트
+$searchToolPath = Join-Path $ScriptDir ".search\ai-grep"
+$searchToolExists = Test-Path $searchToolPath
+if ($searchToolExists) {
+    Write-Host ""
+    Write-Host "  AI-grep 검색 도구를 설정하시겠습니까?" -ForegroundColor White
+    Write-Host "    [1] 예 - CLAUDE.md에 검색 규칙 포함 + 인덱싱 수행" -ForegroundColor White
+    Write-Host "    [2] 아니오 - 검색 도구 없이 진행 (기본)" -ForegroundColor White
+    Write-Host ""
+    $aiGrepChoice = Read-Host "  선택 (1/2, 기본: 2)"
+    if ($aiGrepChoice -eq "1") {
+        $aiGrepEnabled = $true
+    } else {
+        $aiGrepEnabled = $false
+    }
+}
+
+if ($aiGrepEnabled) {
+    $dynamicVars.SearchRulesSection = @'
+
+## 검색 규칙
+- 코드 검색 시 AI-grep을 먼저 사용할 것 (상세: `.guides/SEARCH_GUIDE.md`)
+- Windows: `PYTHONIOENCODING=utf-8 python .search/ai-grep [command]`
+
+'@
+    Write-Host "  AI-grep 검색 규칙: 활성화" -ForegroundColor Green
+} else {
+    $dynamicVars.SearchRulesSection = "`n"
+    Write-Host "  AI-grep 검색 규칙: 비활성화" -ForegroundColor Gray
+}
+
 Write-Host "  $($mergedStages.Count)개 스테이지 동적 컨텐츠 생성 완료" -ForegroundColor Green
 
 # ─────────────────────────────────────────────
@@ -653,6 +693,20 @@ Write-Host "  가이드 스켈레톤 복사 완료" -ForegroundColor Green
 # ─────────────────────────────────────────────
 # 8. 완료 요약
 # ─────────────────────────────────────────────
+# ─────────────────────────────────────────────
+# 8.5. AI-grep 초기 설정 (선택된 경우)
+# ─────────────────────────────────────────────
+if ($aiGrepEnabled -and $searchToolExists) {
+    Write-Host "`n  AI-grep 초기 설정..." -ForegroundColor Cyan
+    try {
+        $env:PYTHONIOENCODING = "utf-8"
+        & python $searchToolPath setup 2>&1 | ForEach-Object { Write-Host "    $_" -ForegroundColor Gray }
+        Write-Host "  AI-grep 설정 완료" -ForegroundColor Green
+    } catch {
+        Write-Host "  WARN: AI-grep 설정 실패 - 수동으로 실행하세요: PYTHONIOENCODING=utf-8 python .search/ai-grep setup" -ForegroundColor Yellow
+    }
+}
+
 Write-Host "`n[9/9] 초기화 완료!" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "  ============================================" -ForegroundColor White

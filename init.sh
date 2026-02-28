@@ -217,6 +217,9 @@ replace_template_vars() {
     content="${content//\{\{CONVERGENCE_STAGES_TEXT\}\}/$DYN_CONVERGENCE_STAGES_TEXT}"
     content="${content//\{\{CONVERGENCE_STAGES_LIST\}\}/$DYN_CONVERGENCE_STAGES_LIST}"
 
+    # 검색 규칙 (AI-grep 옵션)
+    content="${content//\{\{SEARCH_RULES_SECTION\}\}/$DYN_SEARCH_RULES_SECTION}"
+
     # 프로젝트 정보
     content="${content//\{\{PROJECT_NAME\}\}/$(echo "$CONFIG" | jq -r '.project.name')}"
     content="${content//\{\{PROJECT_DESCRIPTION\}\}/$(echo "$CONFIG" | jq -r '.project.description')}"
@@ -531,6 +534,40 @@ if [ -n "$CONV_KOREAN_NAMES" ]; then
 > 수렴 검증이 적용되지 않는 단계는 Gate 검증과 크로스체크로 품질을 보장합니다."
 fi
 
+# SEARCH_RULES_SECTION (AI-grep 옵션)
+AI_GREP_ENABLED=$(echo "$CONFIG" | jq -r '.features.aiGrep // false')
+SEARCH_TOOL_PATH="$SCRIPT_DIR/.search/ai-grep"
+SEARCH_TOOL_EXISTS=false
+if [ -f "$SEARCH_TOOL_PATH" ]; then
+    SEARCH_TOOL_EXISTS=true
+fi
+
+# AI-grep 설정 선택 프롬프트
+if [ "$SEARCH_TOOL_EXISTS" = "true" ]; then
+    echo ""
+    echo -e "  ${WHITE}AI-grep 검색 도구를 설정하시겠습니까?${NC}"
+    echo -e "  ${WHITE}  [1] 예 - CLAUDE.md에 검색 규칙 포함 + 인덱싱 수행${NC}"
+    echo -e "  ${WHITE}  [2] 아니오 - 검색 도구 없이 진행 (기본)${NC}"
+    echo ""
+    read -rp "  선택 (1/2, 기본: 2): " AI_GREP_CHOICE
+    case "$AI_GREP_CHOICE" in
+        1) AI_GREP_ENABLED="true" ;;
+        *) AI_GREP_ENABLED="false" ;;
+    esac
+fi
+
+if [ "$AI_GREP_ENABLED" = "true" ]; then
+    DYN_SEARCH_RULES_SECTION='
+## 검색 규칙
+- 코드 검색 시 AI-grep을 먼저 사용할 것 (상세: `.guides/SEARCH_GUIDE.md`)
+- Windows: `PYTHONIOENCODING=utf-8 python .search/ai-grep [command]`
+'
+    echo -e "  ${GREEN}AI-grep 검색 규칙: 활성화${NC}"
+else
+    DYN_SEARCH_RULES_SECTION=$'\n'
+    echo -e "  ${GRAY}AI-grep 검색 규칙: 비활성화${NC}"
+fi
+
 echo -e "  ${GREEN}${MERGED_COUNT}개 스테이지 동적 컨텐츠 생성 완료${NC}"
 
 # ─────────────────────────────────────────────
@@ -698,6 +735,18 @@ echo -e "  ${GREEN}가이드 스켈레톤 복사 완료${NC}"
 # ─────────────────────────────────────────────
 # 8. 완료 요약
 # ─────────────────────────────────────────────
+# ─────────────────────────────────────────────
+# 8.5. AI-grep 초기 설정 (선택된 경우)
+# ─────────────────────────────────────────────
+if [ "$AI_GREP_ENABLED" = "true" ] && [ "$SEARCH_TOOL_EXISTS" = "true" ]; then
+    echo -e "\n  ${CYAN}AI-grep 초기 설정...${NC}"
+    if PYTHONIOENCODING=utf-8 python "$SEARCH_TOOL_PATH" setup 2>&1 | sed 's/^/    /'; then
+        echo -e "  ${GREEN}AI-grep 설정 완료${NC}"
+    else
+        echo -e "  ${YELLOW}WARN: AI-grep 설정 실패 - 수동으로 실행하세요: PYTHONIOENCODING=utf-8 python .search/ai-grep setup${NC}"
+    fi
+fi
+
 echo -e "\n${CYAN}[9/9] 초기화 완료!${NC}"
 echo ""
 echo -e "  ${WHITE}============================================${NC}"
