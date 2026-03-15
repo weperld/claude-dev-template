@@ -40,34 +40,9 @@
 
 ---
 
-## 필수 참조 문서
+## 참조 문서
 
-작업 전 반드시 해당 문서를 확인하세요:
-
-| 문서 | 경로 | 용도 |
-|------|------|------|
-| **프로젝트 요약** | `PROJECT_SUMMARY.md` | 30초 프로젝트 이해 |
-| **에이전트 규칙** | `AGENTS.md` | 절대 규칙, Self-Validation, Cross-Stage Review |
-| **에이전트 역할** | `AGENT_ROLES.md` | 각 에이전트 역할 정의 |
-| **워크플로우** | `WORKFLOW_PLANNING/INDEX.md` | 파이프라인, WIP 추적, 문서화 규칙 |
-| **작업 현황** | `WORK_IN_PROGRESS.md` | 현재 진행 중인 작업 |
-| **빠른 참조** | `QUICK_REFERENCE.md` | 자주 사용하는 명령어/패턴 |
-
-### 개발 가이드 (.guides/)
-
-| 문서 | 용도 |
-|------|------|
-| `.guides/SEARCH_GUIDE.md` | AI-grep 사용법 및 검색 전략 |
-| `.guides/DEVELOPMENT_RULES.md` | 수정 규칙, 파이프라인, 수렴 검증 |
-| `.guides/BUILD_GUIDE.md` | 빌드 및 개발 절차 |
-| `.guides/CODE_STYLE.md` | 코드 스타일 가이드 |
-| `.guides/TECHNICAL_RULES.md` | 기술 요구사항 및 표준 |
-| `.guides/WORKFLOW_GUIDE.md` | 워크플로우 절차 |
-| `.guides/TEST_GUIDE.md` | 테스트 표준 |
-| `.guides/COMMIT_RULES.md` | Git 커밋 규칙 |
-| `.guides/PLANNING_TEMPLATE.md` | 기획 문서 템플릿 |
-| `.guides/VERIFICATION_ITEMS.md` | 검증 항목 체크리스트 |
-| `.guides/METHOD_B_REFERENCE.md` | Method B 참조 문서 |
+문서 목록, 개발 가이드, 단축 지시법 → `QUICK_REFERENCE.md` 참조
 
 ---
 
