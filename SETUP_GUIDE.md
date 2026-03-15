@@ -104,6 +104,21 @@
 | standard | 5단계 | Plan → Code → Test → Docs → Review | 일반 프로젝트, 중규모 개발 |
 | full | 7단계 | Plan → Design → Code → Test → Docs → QA → Review | 대규모/엄격한 프로젝트, 팀 개발 |
 
+#### 1-7. 옵션 선택
+
+```
+질문할 내용:
+- AI-grep 검색 도구를 사용하시겠습니까?
+  1. 사용 - 토큰 절약형 코드베이스 검색 도구 (.search/ 디렉토리 포함)
+  2. 사용 안 함 (기본)
+
+  설명: AI-grep은 SQLite FTS5 기반의 로컬 검색 도구입니다.
+  AI 어시스턴트가 전체 파일을 읽지 않고도 코드베이스를 효율적으로 탐색할 수 있습니다.
+  Python 3.9+ 및 ripgrep이 필요합니다.
+
+  권장: 코드베이스 규모가 크거나, AI 어시스턴트의 토큰 사용을 줄이고 싶다면 사용
+```
+
 ---
 
 ### Phase 2: template-config.json 생성
@@ -127,6 +142,9 @@
     "outputFormats": "[출력 포맷]",
     "cliOptions": "[CLI 옵션]",
     "domainRules": "[도메인 규칙]"
+  },
+  "features": {
+    "aiGrep": false
   },
   "pipeline": {
     "preset": "[lite/standard/full]"
@@ -173,6 +191,7 @@ Set-Location "_template_temp"
 #   - .claude/commands/ (디렉토리 전체)
 #   - .guides/ (디렉토리 전체)
 #   - .wips/ (디렉토리 전체, templates/와 active/ 포함)
+#   - .search/ (AI-grep 활성화 시, 디렉토리 전체)
 #   - reports/ (디렉토리)
 #   - WORK_HISTORY.json
 
@@ -248,6 +267,13 @@ rm -rf "_template_temp"
    - `.guides/CODE_STYLE.example.md` → `.guides/CODE_STYLE.md`
    - `.guides/TECHNICAL_RULES.example.md` → `.guides/TECHNICAL_RULES.md`
    - `.guides/TEST_GUIDE.example.md` → `.guides/TEST_GUIDE.md`
+
+6. **AI-grep 검색 도구 복사** (`features.aiGrep: true`인 경우):
+   - `.search/ai-grep` → 프로젝트 루트 (CLI 실행 파일)
+   - `.search/vault_lib/` → 프로젝트 루트 (Python 모듈 디렉토리)
+   - `.search/README.md` → 프로젝트 루트
+   - `.guides/SEARCH_GUIDE.md` → 프로젝트 루트
+   - 초기화: `PYTHONIOENCODING=utf-8 python .search/ai-grep setup` 실행
 
 ---
 
